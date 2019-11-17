@@ -4,7 +4,7 @@ The only hook you need to perform JavaScript animations in React.
 * Lightweight: only 2KB
 * Built with 0 dependencies
 * Toggle play/pause
-* Combine with [any easing function](https://github.com/danro/jquery-easing/blob/master/jquery.easing.js) to get the right animation
+* Combine with [any easing function](http://www.gizma.com/easing/#l) to get the right animation
 
 ## Installation
 ```
