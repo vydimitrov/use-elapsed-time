@@ -45,83 +45,13 @@ The second argument `config` is optional and it makes sense when the animation d
 The hook returns elapsed time in milliseconds.  
 
 ## Use cases
-### Countdown timer
-```jsx
-import { useElapsedTime } from 'use-elapsed-time';
+Countdown timer  
+[![Edit priceless-hill-2tbiq](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/priceless-hill-2tbiq?fontsize=14&hidenavigation=1&theme=dark)
 
-const isPlaying = true;
-const durationMilliseconds = 5000;
-const config = { durationMilliseconds };
 
-const CountDownTimerComponent = () => {  
-  const elapsedTime = useElapsedTime(isPlaying, config);
-  const remainingTime = Math.ceil((durationMilliseconds - elapsedTime) / 1000);
-  
-  return <div>Remaining {remainingTime} seconds</div>;
-};
-```
-[Countdown timer demo](https://codesandbox.io/s/priceless-hill-2tbiq)
+Count up animation  
+[![Edit hungry-cray-hl6wn](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/hungry-cray-hl6wn?fontsize=14&hidenavigation=1&theme=dark)
 
-### Count Up
-```jsx
-import { useElapsedTime } from 'use-elapsed-time';
 
-const easing = (t, b, c, d) => {
-    return c*((t=t/d-1)*t*t + 1) + b;
-};
-
-const isPlaying = true;
-const start = 90;
-const end = 300;
-const durationMilliseconds = 3000;
-const config = { durationMilliseconds };
-
-const CountUpComponent = () => {
-    const elapsedTime = useElapsedTime(isPlaying, config);
-    const currentValue = easing(elapsedTime, start, end - start, durationMilliseconds);
-
-    return <div>{Math.round(currentValue)}</div>;
-};
-```
-[Count up demo](https://codesandbox.io/s/hungry-cray-hl6wn)
-
-### Non-liner path animation
-```jsx
-import { useElapsedTime } from 'use-elapsed-time';
-
-const easing = (t, b, c, d) => {
-    return c*((t=t/d-1)*t*t + 1) + b;
-};
-
-// define the path by an array of cordinates [x, y] 
-const points = [[150,200],[151,201], ...];
-const pointsLength = 530 - 1;
-const isPlaying = true;
-const durationMilliseconds = 4000;
-const config = { durationMilliseconds, onComplete: () => [true] };
-
-const BounceAnimation = () => {
-    const elapsedTime = useElapsedTime(isPlaying, config);
-    const currentPoint = easing(elapsedTime, 0, pointsLength, durationMilliseconds);
-    const colorValue = easing(elapsedTime, 0, 255, durationMilliseconds);
-  
-    const pointStyle = {
-        position: 'absolute',
-        left: points[currentPoint][0],
-        top: points[currentPoint][1],
-        width: 20,
-        height: 20,
-        transform: 'translate(-50%, -50%)',
-        borderRadius: '50%',
-        background: `rgba(${colorValue}, 0, ${255 - colorValue})`
-    };
-
-    return (
-        <div style={{ position: 'relative', width: 800, height: 600 }}>
-            <div style={pointStyle} />
-        </div>
-    );
-};
-```
-
-[Demo non-linear animation](https://codesandbox.io/s/inspiring-austin-d6ol6)
+Non-liner path animation  
+[![Edit inspiring-austin-d6ol6](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/inspiring-austin-d6ol6?fontsize=14&hidenavigation=1&theme=dark)
