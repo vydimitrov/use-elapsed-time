@@ -1,11 +1,7 @@
 import { useLayoutEffect, useState, useRef } from 'react';
 
 const useElapsedTime = (isPlaying, config = {}) => {
-  const {
-    durationMilliseconds,
-    onComplete,
-    isRepeated
-  } = config;
+  const { durationMilliseconds, onComplete } = config;
   const [elapsedTime, setElapsedTime] = useState(0);
   const requestRef = useRef();
   const previousTimeRef = useRef();
@@ -23,16 +19,18 @@ const useElapsedTime = (isPlaying, config = {}) => {
         return isCompleted ? durationMilliseconds : currentElapsedTime;
       });
     }
-
+    
     if (isCompleted) {
       if (typeof onComplete === 'function') {
-        onComplete();
-      }
+        const [shouldRepeat = false, delay = 0] = onComplete() || [];
 
-      if (isRepeated) {
-        setElapsedTime(0);
-        previousTimeRef.current = undefined;
-        requestRef.current = requestAnimationFrame(loop);
+        if (shouldRepeat) {
+          setTimeout(() => {
+            setElapsedTime(0);
+            previousTimeRef.current = undefined;
+            requestRef.current = requestAnimationFrame(loop);
+          }, delay);
+        }
       }
     } else {
       previousTimeRef.current = time;

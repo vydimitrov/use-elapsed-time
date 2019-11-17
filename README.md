@@ -30,18 +30,18 @@ const MyComponent = () => {
 
 ## Function signature
 ```js
-  const useElapsedTime = (
+  function useElapsedTime(
     isPlaying: boolean,
     config?: {
       durationMilliseconds: number,
-      onComplete?: () => void,
-      isRepeated?: boolean
+      onComplete?: () => undefined | [shouldRepeat: boolean, delay: number]
     }
   ): number;
 ```
 
 The first argument `isPlaying` indicates if the loop to get the elapsed time is running or it is paused.
-The second argument `config` is optional and it makes sense when the animation duration `durationMilliseconds` is defined. `onComplete` callback will be fired when the duration is reached. If `isRepeated` is set, the elapsed time loop will start over once the duration is reached.
+The second argument `config` is optional and it makes sense when the animation duration `durationMilliseconds` is defined. `onComplete` callback will be fired when the duration is reached. `onComplete` can be used to restart the elapsed time loop by returning an array where the first element `shouldRepeat` indicates if the loop should start over and second element `delay` specifies the delay before looping again in milliseconds.  
+
 The hook returns elapsed time in milliseconds.  
 
 ## Use cases
@@ -98,7 +98,7 @@ const points = [[150,200],[151,201], ...];
 const pointsLength = 530 - 1;
 const isPlaying = true;
 const durationMilliseconds = 4000;
-const config = { durationMilliseconds, isRepeated: true };
+const config = { durationMilliseconds, onComplete: () => true };
 
 const BounceAnimation = () => {
     const elapsedTime = useElapsedTime(isPlaying, config);
