@@ -98,7 +98,7 @@ const points = [[150,200],[151,201], ...];
 const pointsLength = 530 - 1;
 const isPlaying = true;
 const durationMilliseconds = 4000;
-const config = { durationMilliseconds, onComplete: () => true };
+const config = { durationMilliseconds, onComplete: () => [true] };
 
 const BounceAnimation = () => {
     const elapsedTime = useElapsedTime(isPlaying, config);
