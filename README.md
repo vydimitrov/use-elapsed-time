@@ -5,6 +5,7 @@ The only hook you need to perform JavaScript animations in React.
 * Built with 0 dependencies
 * Toggle play/pause
 * Combine with [any easing function](http://www.gizma.com/easing/#l) to get the right animation
+* Built-in and ready-to-use TypeScript type definitions.
 
 ## Installation
 ```

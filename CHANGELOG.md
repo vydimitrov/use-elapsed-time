@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.3 (November 27th, 2019)
+
+**Implemented enhancements:**
+- Add TypeScript type definitions
+
 ## 1.1.2 (November 16th, 2019)
 
 **Implemented enhancements:**
