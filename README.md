@@ -35,13 +35,14 @@ const MyComponent = () => {
     isPlaying: boolean,
     config?: {
       durationMilliseconds: number,
-      onComplete?: () => undefined | [shouldRepeat: boolean, delay: number]
+      onComplete?: () => undefined | [shouldRepeat: boolean, delay: number],
+      startAt: number
     }
   ): number;
 ```
 
 The first argument `isPlaying` indicates if the loop to get the elapsed time is running or it is paused.
-The second argument `config` is optional and it makes sense when the animation duration `durationMilliseconds` is defined. `onComplete` callback will be fired when the duration is reached. `onComplete` can be used to restart the elapsed time loop by returning an array where the first element `shouldRepeat` indicates if the loop should start over and second element `delay` specifies the delay before looping again in milliseconds.  
+The second argument `config` is optional. `durationMilliseconds` option set the animation duration in milliseconds. `onComplete` callback will be fired when the duration is reached. `onComplete` can be used to restart the elapsed time loop by returning an array where the first element `shouldRepeat` indicates if the loop should start over and second element `delay` specifies the delay before looping again in milliseconds. `startAt` option can shift the start time to a different value than 0. `{ durationMilliseconds: 5000, startAt: 2000 }` will return the elapsed time from 2000 to 5000 milliseconds. 
 
 The hook returns elapsed time in milliseconds.  
 
