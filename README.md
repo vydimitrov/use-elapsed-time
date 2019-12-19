@@ -34,9 +34,9 @@ const MyComponent = () => {
   function useElapsedTime(
     isPlaying: boolean,
     config?: {
+      startAt: number,
       durationMilliseconds: number,
-      onComplete?: () => undefined | [shouldRepeat: boolean, delay: number],
-      startAt: number
+      onComplete?: () => undefined | [shouldRepeat: boolean, delay: number]
     }
   ): number;
 ```
