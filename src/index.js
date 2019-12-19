@@ -1,8 +1,8 @@
 import { useLayoutEffect, useState, useRef } from 'react';
 
 const useElapsedTime = (isPlaying, config = {}) => {
-  const { durationMilliseconds, onComplete } = config;
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const { durationMilliseconds, onComplete, startAt } = config;
+  const [elapsedTime, setElapsedTime] = useState(startAt || 0);
   const requestRef = useRef();
   const previousTimeRef = useRef();
 

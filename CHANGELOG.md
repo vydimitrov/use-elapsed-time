@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.1.4 (December 19th, 2019)
+
+**Implemented enhancements:**
+- Add a new config option "startAt" to change the start time of the animation. Defaults to 0 if not provided
+
 ## 1.1.3 (November 27th, 2019)
 
 **Implemented enhancements:**
