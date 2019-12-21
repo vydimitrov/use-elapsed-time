@@ -1,11 +1,10 @@
 # useElapsedTime React hook
-The only hook you need to perform JavaScript animations in React.
-
 ![npm bundle size](https://img.shields.io/bundlephobia/min/use-elapsed-time)
 ![Codecov](https://img.shields.io/codecov/c/github/vydimitrov/use-elapsed-time)
 ![npm](https://img.shields.io/npm/v/use-elapsed-time)
 
-* Built with 0 dependencies
+The only hook you need to perform JavaScript animations in React.
+
 * Toggle play/pause
 * Combine with [any easing function](http://www.gizma.com/easing/#l) to get the right animation
 * Built-in and ready-to-use TypeScript type definitions.
