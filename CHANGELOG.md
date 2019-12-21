@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.1.5 (December 22nd, 2019)
+
+**Implemented enhancements:**
+- Refactor internals
+- Add test coverage
+
 ## 1.1.4 (December 19th, 2019)
 
 **Implemented enhancements:**

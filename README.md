@@ -1,7 +1,11 @@
 # useElapsedTime React hook
 The only hook you need to perform JavaScript animations in React.
 
-* Lightweight: only 2.4kB min / 1.1kB min+gzip
+[![npm bundle size](https://img.shields.io/bundlephobia/min/use-elapsed-time)]
+[![Build Status][build-badge]][build]
+[![Code Coverage][coverage-badge]][coverage]
+[![version][version-badge]][package]
+
 * Built with 0 dependencies
 * Toggle play/pause
 * Combine with [any easing function](http://www.gizma.com/easing/#l) to get the right animation

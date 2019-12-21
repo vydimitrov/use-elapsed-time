@@ -2,40 +2,43 @@ import { useLayoutEffect, useState, useRef } from 'react';
 
 const useElapsedTime = (isPlaying, config = {}) => {
   const { durationMilliseconds, onComplete, startAt } = config;
+  const hasDuration = typeof durationMilliseconds === 'number';
+
   const [elapsedTime, setElapsedTime] = useState(startAt || 0);
-  const requestRef = useRef();
-  const previousTimeRef = useRef();
+  const requestRef = useRef(null);
+  const previousTimeRef = useRef(null);
 
   const loop = time => {
-    let isCompleted = false;
-
-    if (previousTimeRef.current !== undefined) {
-      const deltaTime = time - previousTimeRef.current;
-
-      setElapsedTime(prevTime => {
-        const currentElapsedTime = prevTime + deltaTime;
-        isCompleted = currentElapsedTime >= durationMilliseconds;
-
-        return isCompleted ? durationMilliseconds : currentElapsedTime;
-      });
+    if (previousTimeRef.current === null) {
+      previousTimeRef.current = time;
+      requestRef.current = requestAnimationFrame(loop);
+      return;
     }
-    
-    if (isCompleted) {
+
+    setElapsedTime(prevTime => {
+      const deltaTime = time - previousTimeRef.current;
+      const currentElapsedTime = prevTime + deltaTime;
+
+      if (!hasDuration || currentElapsedTime < durationMilliseconds) {
+        previousTimeRef.current = time;
+        requestRef.current = requestAnimationFrame(loop);
+        return currentElapsedTime;
+      }
+
       if (typeof onComplete === 'function') {
         const [shouldRepeat = false, delay = 0] = onComplete() || [];
 
         if (shouldRepeat) {
           setTimeout(() => {
             setElapsedTime(0);
-            previousTimeRef.current = undefined;
+            previousTimeRef.current = null;
             requestRef.current = requestAnimationFrame(loop);
           }, delay);
         }
       }
-    } else {
-      previousTimeRef.current = time;
-      requestRef.current = requestAnimationFrame(loop);
-    }
+
+      return durationMilliseconds;
+    });
   };
 
   useLayoutEffect(() => {
@@ -45,8 +48,8 @@ const useElapsedTime = (isPlaying, config = {}) => {
 
     return () => {
       cancelAnimationFrame(requestRef.current);
-      previousTimeRef.current = undefined;
-      requestRef.current = undefined;
+      previousTimeRef.current = null;
+      requestRef.current = null;
     };
   }, [isPlaying]);
 

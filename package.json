@@ -1,6 +1,6 @@
 {
   "name": "use-elapsed-time",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "React hook to get the elapsed time in an animation using requestAnimationFrame",
   "main": "./lib/index.js",
   "files": [
@@ -10,7 +10,8 @@
   "types": "types/use-elapsed-time.d.ts",
   "scripts": {
     "build": "webpack",
-    "prepare": "install-peers"
+    "prepare": "install-peers",
+    "test": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -35,11 +36,16 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
+    "@testing-library/react-hooks": "^3.2.1",
     "babel-loader": "^8.0.6",
     "install-peers-cli": "^2.1.1",
+    "jest": "^24.9.0",
     "path": "^0.12.7",
+    "raf-stub": "^3.0.0",
+    "react-test-renderer": "16.8.0",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10"
   }
