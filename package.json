@@ -11,7 +11,8 @@
   "scripts": {
     "build": "webpack",
     "prepare": "install-peers",
-    "test": "jest --watch"
+    "test": "jest --config jestconfig.json",
+    "test-watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
     "@babel/preset-react": "^7.0.0",
     "@testing-library/react-hooks": "^3.2.1",
     "babel-loader": "^8.0.6",
+    "codecov": "^3.6.1",
     "install-peers-cli": "^2.1.1",
     "jest": "^24.9.0",
     "path": "^0.12.7",
