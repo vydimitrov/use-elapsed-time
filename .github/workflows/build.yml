@@ -18,4 +18,4 @@ jobs:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       uses: pullreminders/slack-action@master
       with:
-        args: '{"channel":"github-actions", "text": "Hello"}'
+        args: '{"channel":"CTCQVD5QS", "text": "Hello"}'
