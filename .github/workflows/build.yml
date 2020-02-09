@@ -13,9 +13,22 @@ jobs:
       run: |
         yarn install
         yarn test
-    - name: Notify slack
+    - name: Notify slack success
+      if: success()
       env:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: pullreminders/slack-action@master
+      uses: voxmedia/github-action-slack-notify-build@v1
       with:
-        args: '{"channel":"CTCQVD5QS", "text": "Hello"}'
+        channel: CTCQVD5QS
+        status: SUCCESS
+        color: good
+
+    - name: Notify slack fail
+      if: failure()
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      uses: voxmedia/github-action-slack-notify-build@v1
+      with:
+        channel: CTCQVD5QS
+        status: FAILED
+        color: danger
