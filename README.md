@@ -59,5 +59,3 @@ Count up animation
 
 Non-liner path animation  
 [![Edit inspiring-austin-d6ol6](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/inspiring-austin-d6ol6?fontsize=14&hidenavigation=1&theme=dark)
-
-Trigger workflow
