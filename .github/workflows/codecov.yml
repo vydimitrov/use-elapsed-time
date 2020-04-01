@@ -1,0 +1,22 @@
+name: Codecov Coverage
+on: [push]
+jobs:
+  build-push-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '13.x'
+      - name: Generate coverage report
+        run: |
+          yarn install
+          yarn test
+      - name: Upload coverage
+        if: success()
+        run: |
+          curl -s https://codecov.io/bash | bash
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        shell: bash
