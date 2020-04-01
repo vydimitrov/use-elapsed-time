@@ -1,7 +1,8 @@
 # useElapsedTime React hook
-![npm bundle size](https://img.shields.io/bundlephobia/min/use-elapsed-time)
+[![npm](https://img.shields.io/npm/v/use-elapsed-time)](https://www.npmjs.com/package/use-elapsed-time)
+[![npm](https://img.shields.io/npm/dw/use-elapsed-time)](https://www.npmjs.com/package/use-elapsed-time)
 ![Codecov](https://img.shields.io/codecov/c/github/vydimitrov/use-elapsed-time)
-![npm](https://img.shields.io/npm/v/use-elapsed-time)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/use-elapsed-time)](https://bundlephobia.com/result?p=use-elapsed-time)
 
 The only hook you need to perform JavaScript animations in React.
 
