@@ -44,7 +44,7 @@
     "babel-loader": "^8.0.6",
     "codecov": "^3.6.1",
     "install-peers-cli": "^2.1.1",
-    "jest": "^24.9.0",
+    "jest": "^25.4.0",
     "path": "^0.12.7",
     "raf-stub": "^3.0.0",
     "react-test-renderer": "16.8.0",
