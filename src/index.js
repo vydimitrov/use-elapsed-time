@@ -1,12 +1,22 @@
-import { useLayoutEffect, useState, useRef } from 'react';
+import { useLayoutEffect, useEffect, useState, useRef } from "react";
 
 const useElapsedTime = (isPlaying, config = {}) => {
-  const { durationMilliseconds, onComplete, startAt } = config;
-  const hasDuration = typeof durationMilliseconds === 'number';
+  const { durationMilliseconds, onComplete, startAt = 0 } = config;
+  const hasDuration = typeof durationMilliseconds === "number";
 
-  const [elapsedTime, setElapsedTime] = useState(startAt || 0);
+  const [elapsedTime, setElapsedTime] = useState(startAt);
+  const totalElapsedTime = useRef(startAt * -1);
   const requestRef = useRef(null);
   const previousTimeRef = useRef(null);
+  const onCompleteTimeout = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (onCompleteTimeout.current !== null) {
+        clearTimeout(onCompleteTimeout.current);
+      }
+    };
+  }, []);
 
   const loop = time => {
     if (previousTimeRef.current === null) {
@@ -25,11 +35,14 @@ const useElapsedTime = (isPlaying, config = {}) => {
         return currentElapsedTime;
       }
 
-      if (typeof onComplete === 'function') {
-        const [shouldRepeat = false, delay = 0] = onComplete() || [];
+      if (typeof onComplete === "function") {
+        totalElapsedTime.current += durationMilliseconds;
+
+        const [shouldRepeat = false, delay = 0] =
+          onComplete(totalElapsedTime.current) || [];
 
         if (shouldRepeat) {
-          setTimeout(() => {
+          onCompleteTimeout.current = setTimeout(() => {
             setElapsedTime(0);
             previousTimeRef.current = null;
             requestRef.current = requestAnimationFrame(loop);

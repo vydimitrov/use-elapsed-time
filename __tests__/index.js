@@ -1,14 +1,94 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { replaceRaf } from 'raf-stub';
-import { useElapsedTime } from '../src';
+import { renderHook, act } from "@testing-library/react-hooks";
+import { replaceRaf } from "raf-stub";
+import { useElapsedTime } from "../src";
 
 const addFrame = () => {
-    act(() => {
-        requestAnimationFrame.step();
-    });
+  act(() => {
+    requestAnimationFrame.step();
+  });
+};
+
+const runTimers = () => {
+  act(() => {
+    jest.runOnlyPendingTimers();
+  });
 };
 
 const testElapsedTime = (result, expectedEndValue) => {
+  expect(result.current).toBe(0);
+
+  addFrame();
+  expect(result.current).toBe(0);
+
+  addFrame();
+  expect(result.current).toBe(500);
+
+  addFrame();
+  expect(result.current).toBe(1000);
+
+  addFrame();
+  expect(result.current).toBe(expectedEndValue);
+};
+
+describe("useElapsedTime", () => {
+  replaceRaf([window], {
+    frameDuration: 500,
+    startTime: 3000
+  });
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    requestAnimationFrame.reset();
+  });
+
+  it("should return 0 the first time it renders", () => {
+    const isPlaying = false;
+    const { result } = renderHook(() => useElapsedTime(isPlaying));
+    expect(result.current).toBe(0);
+  });
+
+  it("should return the value provided to startAt the first time it renders", () => {
+    const isPlaying = false;
+    const config = { startAt: 2000 };
+    const { result } = renderHook(() => useElapsedTime(isPlaying, config));
+    expect(result.current).toBe(2000);
+  });
+
+  it("should return the elapsed time for duration of 1400 milliseconds starting at 400", () => {
+    const isPlaying = true;
+    const durationMilliseconds = 1200;
+    const config = { durationMilliseconds, startAt: 400 };
+    const { result } = renderHook(() => useElapsedTime(isPlaying, config));
+
+    expect(result.current).toBe(400);
+
+    addFrame();
+    expect(result.current).toBe(400);
+
+    addFrame();
+    expect(result.current).toBe(900);
+
+    addFrame();
+    expect(result.current).toBe(1200);
+  });
+
+  it("should return the elapsed time for duration of 1400 milliseconds", () => {
+    const isPlaying = true;
+    const durationMilliseconds = 1400;
+    const config = { durationMilliseconds };
+    const { result } = renderHook(() => useElapsedTime(isPlaying, config));
+    testElapsedTime(result, durationMilliseconds);
+  });
+
+  it("should not call onComplete if there is no duration provided", () => {
+    const isPlaying = true;
+    const onComplete = jest.fn();
+    const config = { onComplete };
+    const { result } = renderHook(() => useElapsedTime(isPlaying, config));
+
     expect(result.current).toBe(0);
 
     addFrame();
@@ -21,175 +101,131 @@ const testElapsedTime = (result, expectedEndValue) => {
     expect(result.current).toBe(1000);
 
     addFrame();
-    expect(result.current).toBe(expectedEndValue);
-};
+    addFrame();
+    addFrame();
+    addFrame();
 
-describe('useElapasedTime', () => {
-    replaceRaf([window], {
-        frameDuration: 500,
-        startTime: 3000,
-      });
+    expect(onComplete).not.toHaveBeenCalled();
+  });
 
-    beforeEach(() => {
-        jest.useFakeTimers();
-    });
+  it("should call onComplete when duration is reached", () => {
+    const onComplete = jest.fn();
+    const isPlaying = true;
+    const durationMilliseconds = 1350;
+    const config = { onComplete, durationMilliseconds };
 
-    afterEach(() => {   
-        requestAnimationFrame.reset();
-    });
+    const { result } = renderHook(() => useElapsedTime(isPlaying, config));
+    testElapsedTime(result, durationMilliseconds);
 
-    it('should return 0 the first time it renders', () => {
-        const isPlaying = false;
-        const { result } = renderHook(() => useElapsedTime(isPlaying));
-        expect(result.current).toBe(0);
-    });
+    expect(onComplete).toHaveBeenCalled();
 
-    it('should return the value provided to startAt the first time it renders', () => {
-        const isPlaying = false;
-        const config = { startAt: 2000 };
-        const { result } = renderHook(() => useElapsedTime(isPlaying, config));
-        expect(result.current).toBe(2000);
-    });
+    addFrame();
+    expect(result.current).toBe(durationMilliseconds);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenCalledTimes(0);
+  });
 
-    it('should return the elapsed time for durtion of 1400 miliseconds starting at 400', () => {
-        const isPlaying = true;
-        const durationMilliseconds = 1200;
-        const config = { durationMilliseconds, startAt: 400 };
-        const { result } = renderHook(() => useElapsedTime(isPlaying, config));
-        
-        expect(result.current).toBe(400);
+  it("should reset timer and start over if onComplete returns [shouldRepeat = true]", () => {
+    const shouldRepeat = true;
+    const onComplete = jest.fn(() => [shouldRepeat]);
+    const isPlaying = true;
+    const durationMilliseconds = 1000;
+    const config = { onComplete, durationMilliseconds };
 
-        addFrame();
-        expect(result.current).toBe(400);
-    
-        addFrame();
-        expect(result.current).toBe(900);
-    
-        addFrame();
-        expect(result.current).toBe(1200);
-    });
+    const { result } = renderHook(() => useElapsedTime(isPlaying, config));
+    testElapsedTime(result, durationMilliseconds);
 
-    it('should return the elapsed time for durtion of 1400 miliseconds', () => {
-        const isPlaying = true;
-        const durationMilliseconds = 1400;
-        const config = { durationMilliseconds };
-        const { result } = renderHook(() => useElapsedTime(isPlaying, config));
-        testElapsedTime(result, durationMilliseconds);
-    });
+    expect(onComplete).toHaveBeenCalled();
 
-    it('should not call onComplete if there is no duration provided', () => {
-        const isPlaying = true;
-        const onComplete = jest.fn();
-        const config = { onComplete };
-        const { result } = renderHook(() => useElapsedTime(isPlaying, config));
-        
-        expect(result.current).toBe(0);
+    runTimers();
 
-        addFrame();
-        expect(result.current).toBe(0);
-    
-        addFrame();
-        expect(result.current).toBe(500);
-    
-        addFrame();
-        expect(result.current).toBe(1000);
+    testElapsedTime(result, durationMilliseconds);
 
-        addFrame();
-        addFrame();
-        addFrame();
-        addFrame();
+    expect(onComplete).toHaveBeenCalledTimes(2);
+  });
 
-        expect(onComplete).not.toHaveBeenCalled();
-    });
+  it("should reset timer and start over in 300 milliseconds if onComplete returns [shouldRepeat = true, delay = 300]", () => {
+    const shouldRepeat = true;
+    const delay = 300;
+    const onComplete = jest.fn(() => [shouldRepeat, delay]);
+    const isPlaying = true;
+    const durationMilliseconds = 1000;
+    const config = { onComplete, durationMilliseconds };
 
-    it('should call onComplete when duration is reached', () => {
-        const onComplete = jest.fn();
-        const isPlaying = true;
-        const durationMilliseconds = 1350;
-        const config = { onComplete, durationMilliseconds };
+    const { result } = renderHook(() => useElapsedTime(isPlaying, config));
+    testElapsedTime(result, durationMilliseconds);
 
-        const { result } = renderHook(() => useElapsedTime(isPlaying, config));
-        testElapsedTime(result, durationMilliseconds);
+    expect(onComplete).toHaveBeenCalled();
 
-        expect(onComplete).toHaveBeenCalled();
+    runTimers();
 
-        addFrame();
-        expect(result.current).toBe(durationMilliseconds);
-        expect(onComplete).toHaveBeenCalledTimes(1);
-        expect(setTimeout).toHaveBeenCalledTimes(0);
-    });
+    testElapsedTime(result, durationMilliseconds);
 
-    it('should reset timer and start over if onComplete returns [shouldRepeat = true]', () => {
-        const shouldRepeat = true;
-        const onComplete = jest.fn(() => [shouldRepeat]);
-        const isPlaying = true;
-        const durationMilliseconds = 1000;
-        const config = { onComplete, durationMilliseconds };
+    expect(setTimeout).toHaveBeenCalledTimes(2);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 300);
+    expect(onComplete).toHaveBeenCalledTimes(2);
+  });
 
-        const { result } = renderHook(() => useElapsedTime(isPlaying, config));
-        testElapsedTime(result, durationMilliseconds);
+  it("should start and stop animation loop by toggling isPlaying", () => {
+    let isPlaying = true;
+    const durationMilliseconds = 1400;
+    const config = { durationMilliseconds };
+    const { result, rerender } = renderHook(() =>
+      useElapsedTime(isPlaying, config)
+    );
 
-        expect(onComplete).toHaveBeenCalled();
+    addFrame();
+    addFrame();
+    expect(result.current).toBe(500);
 
-        act(() => {
-            jest.runOnlyPendingTimers();
-        });
-        
-        testElapsedTime(result, durationMilliseconds);
+    isPlaying = false;
+    rerender();
 
-        expect(onComplete).toHaveBeenCalledTimes(2);
-    });
+    addFrame();
+    expect(result.current).toBe(500);
 
-    it('should reset timer and start over in 300 milliseconds if onComplete returns [shouldRepeat = true, delay = 300]', () => {
-        const shouldRepeat = true;
-        const delay = 300;
-        const onComplete = jest.fn(() => [shouldRepeat, delay]);
-        const isPlaying = true;
-        const durationMilliseconds = 1000;
-        const config = { onComplete, durationMilliseconds };
+    addFrame();
+    expect(result.current).toBe(500);
 
-        const { result } = renderHook(() => useElapsedTime(isPlaying, config));
-        testElapsedTime(result, durationMilliseconds);
+    isPlaying = true;
+    rerender();
 
-        expect(onComplete).toHaveBeenCalled();
+    addFrame();
+    expect(result.current).toBe(500);
 
-        act(() => {
-            jest.runOnlyPendingTimers();
-        });
-        
-        testElapsedTime(result, durationMilliseconds);
+    addFrame();
+    expect(result.current).toBe(1000);
+  });
 
-        expect(setTimeout).toHaveBeenCalledTimes(2);
-        expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 300);
-        expect(onComplete).toHaveBeenCalledTimes(2);
-    });
+  it("should pass the total elapsed time to the onComplete callback", () => {
+    const isPlaying = true;
+    const durationMilliseconds = 1200;
+    const shouldRepeat = true;
+    const onComplete = jest.fn(() => [shouldRepeat]);
+    const config = { durationMilliseconds, startAt: 500, onComplete };
 
-    it('should start and stop animation loop by toggeling isPlaying', () => {
-        let isPlaying = true;
-        const durationMilliseconds = 1400;
-        const config = { durationMilliseconds };
-        const { result, rerender } = renderHook(() => useElapsedTime(isPlaying, config));
+    renderHook(() => useElapsedTime(isPlaying, config));
 
-        addFrame();
-        addFrame();
-        expect(result.current).toBe(500);
+    addFrame();
+    addFrame();
+    addFrame();
 
-        isPlaying = false;
-        rerender();
-    
-        addFrame();
-        expect(result.current).toBe(500);
+    expect(onComplete).toHaveBeenLastCalledWith(700);
 
-        addFrame();
-        expect(result.current).toBe(500);
-    
-        isPlaying = true;
-        rerender();
+    runTimers();
 
-        addFrame();
-        expect(result.current).toBe(500);
+    addFrame();
+    addFrame();
+    addFrame();
+    addFrame();
+    expect(onComplete).toHaveBeenLastCalledWith(1900);
 
-        addFrame();
-        expect(result.current).toBe(1000);
-    });  
+    runTimers();
+
+    addFrame();
+    addFrame();
+    addFrame();
+    addFrame();
+    expect(onComplete).toHaveBeenLastCalledWith(3100);
+  });
 });

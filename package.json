@@ -1,7 +1,7 @@
 {
   "name": "use-elapsed-time",
-  "version": "1.1.6",
-  "description": "React hook to get the elapsed time in an animation using requestAnimationFrame",
+  "version": "1.2.0",
+  "description": "React hook to measure elapsed time using requestAnimationFrame",
   "main": "./lib/index.js",
   "files": [
     "lib",
@@ -12,18 +12,21 @@
     "build": "webpack",
     "prepare": "install-peers",
     "test": "jest --config jestconfig.json",
-    "test-watch": "jest --watch"
+    "test-watch": "jest --watch",
+    "dev:push": "yarn build && yalc push"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vydimitrov/use-elapsed-time.git"
   },
   "keywords": [
-    "React",
+    "react",
+    "hook",
     "hooks",
     "requestAnimationFrame",
     "animation",
-    "loop"
+    "loop",
+    "time"
   ],
   "author": "Vasil Dimitrov",
   "license": "MIT",
@@ -32,8 +35,7 @@
   },
   "homepage": "https://github.com/vydimitrov/use-elapsed-time#readme",
   "peerDependencies": {
-    "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react": ">=16.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
