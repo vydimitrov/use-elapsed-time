@@ -13,7 +13,8 @@
     "prepare": "install-peers",
     "test": "jest --config jestconfig.json",
     "test-watch": "jest --watch",
-    "dev:push": "yarn build && yalc push"
+    "dev:push": "yarn build && yalc push",
+    "prepublish": "yarn build"
   },
   "repository": {
     "type": "git",
