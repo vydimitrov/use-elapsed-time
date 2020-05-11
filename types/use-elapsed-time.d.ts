@@ -21,7 +21,7 @@ export interface Options {
   /** Start the animation at provided time in seconds. Default: 0 */
   startAt?: number
   /** Reset elapsed time when the duration changes. Default: false */
-  shouldResetOnDurationChange?: number
+  shouldResetOnDurationChange?: boolean
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
   onComplete?: (totalElapsedTime: number) => void | OnCompleteRepeat
 }
