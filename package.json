@@ -10,7 +10,7 @@
   "types": "types/use-elapsed-time.d.ts",
   "scripts": {
     "build": "webpack",
-    "test": "jest --config jestconfig.json",
+    "test": "jest --collectCoverage --coverageDirectory=\"coverage\"",
     "test-watch": "jest --watch",
     "dev:push": "yarn build && yalc push",
     "prepublish": "yarn build"
@@ -39,7 +39,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.0",
     "@testing-library/react-hooks": "^3.2.1",
