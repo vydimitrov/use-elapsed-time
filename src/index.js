@@ -16,8 +16,8 @@ const useElapsedTime = (isPlaying, options = {}) => {
   const didMountRef = useRef(true)
 
   const reset = useCallback(
-    (newStartAt) => {
-      setElapsedTime(typeof newStartAt === 'number' ? newStartAt : startAt)
+    (newStartAt = startAt) => {
+      setElapsedTime(newStartAt)
     },
     [startAt]
   )
@@ -42,8 +42,8 @@ const useElapsedTime = (isPlaying, options = {}) => {
       if (typeof onComplete === 'function') {
         totalElapsedTime.current += duration
 
-        const [shouldRepeat = false, delay = 0, newStartAt = 0] =
-          onComplete(totalElapsedTime.current) || []
+        const { shouldRepeat = false, delay = 0, newStartAt } =
+          onComplete(totalElapsedTime.current) || {}
 
         if (shouldRepeat) {
           repeatTimeoutRef.current = setTimeout(() => {

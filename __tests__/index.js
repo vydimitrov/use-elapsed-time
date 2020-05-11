@@ -125,9 +125,9 @@ describe('useElapsedTime', () => {
     expect(setTimeout).toHaveBeenCalledTimes(0)
   })
 
-  it('should reset timer and start over if onComplete returns [shouldRepeat = true]', () => {
+  it('should reset timer and start over if onComplete returns { shouldRepeat: true }', () => {
     const shouldRepeat = true
-    const onComplete = jest.fn(() => [shouldRepeat])
+    const onComplete = jest.fn(() => ({ shouldRepeat }))
     const isPlaying = true
     const duration = 1000
     const options = { onComplete, duration }
@@ -147,7 +147,7 @@ describe('useElapsedTime', () => {
   it('should reset timer and start over in 300 milliseconds if onComplete returns [shouldRepeat = true, delay = 300]', () => {
     const shouldRepeat = true
     const delay = 300
-    const onComplete = jest.fn(() => [shouldRepeat, delay])
+    const onComplete = jest.fn(() => ({ shouldRepeat, delay }))
     const isPlaying = true
     const duration = 1000
     const options = { onComplete, duration }
@@ -170,7 +170,7 @@ describe('useElapsedTime', () => {
     const shouldRepeat = true
     const delay = 0
     const newStartAt = 200
-    const onComplete = jest.fn(() => [shouldRepeat, delay, newStartAt])
+    const onComplete = jest.fn(() => ({ shouldRepeat, delay, newStartAt }))
     const isPlaying = true
     const duration = 1000
     const options = { onComplete, duration, startAt: 500 }
@@ -223,7 +223,7 @@ describe('useElapsedTime', () => {
     const isPlaying = true
     const duration = 1200
     const shouldRepeat = true
-    const onComplete = jest.fn(() => [shouldRepeat])
+    const onComplete = jest.fn(() => ({ shouldRepeat }))
     const options = { duration, startAt: 500, onComplete }
 
     renderHook(() => useElapsedTime(isPlaying, options))
