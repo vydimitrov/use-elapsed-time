@@ -1,18 +1,32 @@
-/** Optional configuration object */
-export interface Config {
-  /** Animation duration in milliseconds */
-  durationMilliseconds?: number;
-
-  /** Start the animation at provided time in milliseconds. Defaults to 0 if not provided */
-  startAt?: number;
-
-  /**
-   * On animation complete event handler. It can be used to restart the animation by returning an array
-   * where the first element "shouldRepeat" indicates if the loop should start over
-   * and second element "delay" specifies the delay before looping again in milliseconds.
-   *
-   */
-  onComplete?: (totalElapsedTime: number) => void | [boolean, number]; // [shouldRepeat: boolean, delay: number]
+export interface ElapsedTimeReturnValue {
+  /** Current elapsed time in seconds */
+  elapsedTime: number
+  /** Reset method to reset the elapsed time and start over from the "startAt" value */
+  reset: (newStartAt: number) => void
 }
 
-export function useElapsedTime(isPlaying: boolean, config?: Config): number;
+export interface OnCompleteRepeat {
+  /** Indicates if the loop should start over. Default: false */
+  shouldRepeat?: boolean
+  /** Delay in seconds before looping again. Default: 0 */
+  delay?: number
+  /** New value in seconds to start at when repeating the animation. Default: startAt */
+  newStartAt?: number
+}
+
+/** Optional configuration object */
+export interface Options {
+  /** Animation duration in seconds */
+  duration?: number
+  /** Start the animation at provided time in seconds. Default: 0 */
+  startAt?: number
+  /** Reset elapsed time when the duration changes. Default: false */
+  shouldResetOnDurationChange?: boolean
+  /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
+  onComplete?: (totalElapsedTime: number) => void | OnCompleteRepeat
+}
+
+export function useElapsedTime(
+  isPlaying: boolean,
+  options?: Options
+): ElapsedTimeReturnValue

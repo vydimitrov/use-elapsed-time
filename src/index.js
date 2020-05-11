@@ -1,72 +1,103 @@
-import { useLayoutEffect, useEffect, useState, useRef } from "react";
+import { useLayoutEffect, useState, useRef, useCallback } from 'react'
 
-const useElapsedTime = (isPlaying, config = {}) => {
-  const { durationMilliseconds, onComplete, startAt = 0 } = config;
-  const hasDuration = typeof durationMilliseconds === "number";
+const useElapsedTime = (isPlaying, options = {}) => {
+  const {
+    duration,
+    onComplete,
+    startAt = 0,
+    shouldResetOnDurationChange = false,
+  } = options
 
-  const [elapsedTime, setElapsedTime] = useState(startAt);
-  const totalElapsedTime = useRef(startAt * -1);
-  const requestRef = useRef(null);
-  const previousTimeRef = useRef(null);
-  const onCompleteTimeout = useRef(null);
+  const [elapsedTime, setElapsedTime] = useState(startAt)
+  const totalElapsedTime = useRef(startAt * -1000) // keep in milliseconds to avoid summing up floating point numbers
+  const requestRef = useRef(null)
+  const previousTimeRef = useRef(null)
+  const repeatTimeoutRef = useRef(null)
+  const didMountRef = useRef(true)
 
-  useEffect(() => {
-    return () => {
-      if (onCompleteTimeout.current !== null) {
-        clearTimeout(onCompleteTimeout.current);
-      }
-    };
-  }, []);
+  const reset = useCallback(
+    (newStartAt = startAt) => {
+      setElapsedTime(newStartAt)
+    },
+    [startAt]
+  )
 
-  const loop = time => {
+  const loop = (time) => {
+    const timeSec = time / 1000
     if (previousTimeRef.current === null) {
-      previousTimeRef.current = time;
-      requestRef.current = requestAnimationFrame(loop);
-      return;
+      previousTimeRef.current = timeSec
+      requestRef.current = requestAnimationFrame(loop)
+      return
     }
 
-    setElapsedTime(prevTime => {
-      const deltaTime = time - previousTimeRef.current;
-      const currentElapsedTime = prevTime + deltaTime;
+    setElapsedTime((prevTime) => {
+      const deltaTime = timeSec - previousTimeRef.current
+      const currentElapsedTime = prevTime + deltaTime
 
-      if (!hasDuration || currentElapsedTime < durationMilliseconds) {
-        previousTimeRef.current = time;
-        requestRef.current = requestAnimationFrame(loop);
-        return currentElapsedTime;
+      if (typeof duration !== 'number' || currentElapsedTime < duration) {
+        previousTimeRef.current = timeSec
+        requestRef.current = requestAnimationFrame(loop)
+        return currentElapsedTime
       }
 
-      if (typeof onComplete === "function") {
-        totalElapsedTime.current += durationMilliseconds;
+      if (typeof onComplete === 'function') {
+        totalElapsedTime.current += duration * 1000
+        // convert back to seconds
+        const totalElapsedTimeSec = totalElapsedTime.current / 1000
 
-        const [shouldRepeat = false, delay = 0] =
-          onComplete(totalElapsedTime.current) || [];
+        const { shouldRepeat = false, delay = 0, newStartAt } =
+          onComplete(totalElapsedTimeSec) || {}
 
         if (shouldRepeat) {
-          onCompleteTimeout.current = setTimeout(() => {
-            setElapsedTime(0);
-            previousTimeRef.current = null;
-            requestRef.current = requestAnimationFrame(loop);
-          }, delay);
+          repeatTimeoutRef.current = setTimeout(() => {
+            reset(newStartAt)
+            previousTimeRef.current = null
+            requestRef.current = requestAnimationFrame(loop)
+          }, delay * 1000)
         }
       }
 
-      return durationMilliseconds;
-    });
-  };
+      return duration
+    })
+  }
+
+  // only for internal use
+  const cleanup = () => {
+    cancelAnimationFrame(requestRef.current)
+    clearTimeout(repeatTimeoutRef.current)
+    previousTimeRef.current = null
+  }
 
   useLayoutEffect(() => {
     if (isPlaying) {
-      requestRef.current = requestAnimationFrame(loop);
+      requestRef.current = requestAnimationFrame(loop)
     }
 
-    return () => {
-      cancelAnimationFrame(requestRef.current);
-      previousTimeRef.current = null;
-      requestRef.current = null;
-    };
-  }, [isPlaying]);
+    // this will ALSO clear the loop before unmounting
+    return cleanup
+  }, [isPlaying])
 
-  return elapsedTime;
-};
+  // update on duration change
+  useLayoutEffect(() => {
+    if (didMountRef.current) {
+      didMountRef.current = false
+      return
+    }
 
-export { useElapsedTime };
+    // stop requestAnimationFrame if it is running and restart loop
+    // thus the new duration can be taken in the new loop
+    if (isPlaying) {
+      cleanup()
+      requestRef.current = requestAnimationFrame(loop)
+    }
+
+    // reset elapsed time when duration changes
+    if (shouldResetOnDurationChange) {
+      reset()
+    }
+  }, [duration])
+
+  return { elapsedTime, reset }
+}
+
+export { useElapsedTime }

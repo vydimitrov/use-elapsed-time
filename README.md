@@ -19,23 +19,21 @@ React hook to measure elapsed time using `requestAnimationFrame`. The time measu
 yarn add use-elapsed-time
 ```
 
-or
+## Migrating from v1.x.x to v2.x.x?
 
-```
-npm install use-elapsed-time
-```
+There are a few breaking changes to consider before switching to v2.x.x. Read [Migrate to v2.x.x](https://github.com/vydimitrov/use-elpased-time/blob/master/MIGRATE_TO_V2.md) docs for more info.
 
 ## Basic usage
 
 ```jsx
-import { useElapsedTime } from "use-elapsed-time";
+import { useElapsedTime } from 'use-elapsed-time'
 
 const MyComponent = () => {
-  const isPlaying = true;
-  const elapsedTime = useElapsedTime(isPlaying);
+  const isPlaying = true
+  const { elapsedTime } = useElapsedTime(isPlaying)
 
-  return elapsedTime;
-};
+  return elapsedTime
+}
 ```
 
 [Basic usage demo](https://codesandbox.io/s/epic-dream-hn62k)
@@ -45,18 +43,38 @@ const MyComponent = () => {
 ```js
   function useElapsedTime(
     isPlaying: boolean,
-    config?: {
-      startAt: number,
-      durationMilliseconds: number,
-      onComplete?: (totalElapsedTime: number) => void | [shouldRepeat: boolean, delay: number]
+    options?: {
+      duration?: number,
+      startAt?: number,
+      shouldResetOnDurationChange?: boolean,
+      onComplete?: (totalElapsedTime: number) => void | { shouldRepeat: boolean, delay: number, newStartAt: number }
     }
-  ): number;
+  ): {
+    elapsedTime: number,
+    reset?: (newStartAt: number) => void
+  }
 ```
 
-The first argument `isPlaying` indicates if the loop to get the elapsed time is running or it is paused.
-The second argument `config` is optional. `durationMilliseconds` option set the animation duration in milliseconds. `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime`, which could be useful when we repeat the animation. `onComplete` can be used to restart the elapsed time loop by returning an array where the first element `shouldRepeat` indicates if the loop should start over and second element `delay` specifies the delay before looping again in milliseconds. `startAt` option can shift the start time to a different value than 0. `{ durationMilliseconds: 5000, startAt: 2000 }` will return the elapsed time from 2000 to 5000 milliseconds.
+### 1st arg. `isPlaying: boolean`
 
-The hook returns elapsed time in milliseconds.
+> Default: `isPlaying = false`
+
+Indicates if the loop to get the elapsed time is running or it is paused.
+
+### 2nd arg. `options: object`
+
+> Default: `options = {}`
+
+| Prop Name                   | Type                                                                                               | Default | Description                                                                                                                                                                                                                                                                                                                                                                                             |
+| --------------------------- | -------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| duration                    | number                                                                                             | -       | Animation duration in seconds                                                                                                                                                                                                                                                                                                                                                                           |
+| startAt                     | number                                                                                             | 0       | Shift the start time to a different value than 0                                                                                                                                                                                                                                                                                                                                                        |
+| shouldResetOnDurationChange | boolean                                                                                            | false   | Reset elapsed time when the duration changes                                                                                                                                                                                                                                                                                                                                                            |
+| onComplete                  | (totalElapsedTime: number) => void \| { shouldRepeat: boolean, delay: number, newStartAt: number } | -       | `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime` in seconds. `onComplete` can be used to restart the elapsed time loop by returning an object with the following params: `shouldRepeat` indicates if the loop should start over; `delay` - delay before looping again in seconds; `newStartAt` set new start at value. |
+
+### Return value `{ elapsedTime, reset }`
+
+The hook returns an object with `elapsedTime` in seconds and `reset` method.
 
 ## Use cases
 
