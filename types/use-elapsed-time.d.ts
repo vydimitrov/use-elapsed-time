@@ -5,25 +5,25 @@ export interface ElapsedTimeReturnValue {
   reset: (newStartAt: number) => void
 }
 
-export interface OnComplete {
+export interface OnCompleteRepeat {
   /** Indicates if the loop should start over. Default: false */
   shouldRepeat?: boolean
-  /** Delay before looping again. Default: 0 */
+  /** Delay in seconds before looping again. Default: 0 */
   delay?: number
-  /** New value to start at when repeating. Default: startAt */
+  /** New value in seconds to start at when repeating the animation. Default: startAt */
   newStartAt?: number
 }
 
 /** Optional configuration object */
 export interface Options {
-  /** Animation duration in milliseconds */
+  /** Animation duration in seconds */
   duration?: number
-  /** Start the animation at provided time in milliseconds. Default: 0 */
+  /** Start the animation at provided time in seconds. Default: 0 */
   startAt?: number
   /** Reset elapsed time when the duration changes. Default: false */
   shouldResetOnDurationChange?: number
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
-  onComplete?: (totalElapsedTime: number) => void | OnComplete
+  onComplete?: (totalElapsedTime: number) => void | OnCompleteRepeat
 }
 
 export function useElapsedTime(

@@ -9,7 +9,7 @@ const useElapsedTime = (isPlaying, options = {}) => {
   } = options
 
   const [elapsedTime, setElapsedTime] = useState(startAt)
-  const totalElapsedTime = useRef(startAt * -1)
+  const totalElapsedTime = useRef(startAt * -1000) // keep in milliseconds to avoid summing up floating point numbers
   const requestRef = useRef(null)
   const previousTimeRef = useRef(null)
   const repeatTimeoutRef = useRef(null)
@@ -23,34 +23,37 @@ const useElapsedTime = (isPlaying, options = {}) => {
   )
 
   const loop = (time) => {
+    const timeSec = time / 1000
     if (previousTimeRef.current === null) {
-      previousTimeRef.current = time
+      previousTimeRef.current = timeSec
       requestRef.current = requestAnimationFrame(loop)
       return
     }
 
     setElapsedTime((prevTime) => {
-      const deltaTime = time - previousTimeRef.current
+      const deltaTime = timeSec - previousTimeRef.current
       const currentElapsedTime = prevTime + deltaTime
 
       if (typeof duration !== 'number' || currentElapsedTime < duration) {
-        previousTimeRef.current = time
+        previousTimeRef.current = timeSec
         requestRef.current = requestAnimationFrame(loop)
         return currentElapsedTime
       }
 
       if (typeof onComplete === 'function') {
-        totalElapsedTime.current += duration
+        totalElapsedTime.current += duration * 1000
+        // convert back to seconds
+        const totalElapsedTimeSec = totalElapsedTime.current / 1000
 
         const { shouldRepeat = false, delay = 0, newStartAt } =
-          onComplete(totalElapsedTime.current) || {}
+          onComplete(totalElapsedTimeSec) || {}
 
         if (shouldRepeat) {
           repeatTimeoutRef.current = setTimeout(() => {
             reset(newStartAt)
             previousTimeRef.current = null
             requestRef.current = requestAnimationFrame(loop)
-          }, delay)
+          }, delay * 1000)
         }
       }
 
