@@ -55,22 +55,22 @@ const MyComponent = () => {
   }
 ```
 
-### 1st argument `isPlaying: boolean`
+### 1st arg. `isPlaying: boolean`
 
 > Default: `isPlaying = false`
 
 Indicates if the loop to get the elapsed time is running or it is paused.
 
-### 2nd argument `options: object`
+### 2nd arg. `options: object`
 
 > Default: `options = {}`
 
-| Prop Name                   | Type                               | Default                                                      | Description                                      |
-| --------------------------- | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| duration                    | number                             | -                                                            | Animation duration in seconds                    |
-| startAt                     | number                             | 0                                                            | Shift the start time to a different value than 0 |
-| shouldResetOnDurationChange | boolean                            | false                                                        | Reset elapsed time when the duration changes     |
-| onComplete                  | (totalElapsedTime: number) => void | { shouldRepeat: boolean, delay: number, newStartAt: number } | -                                                | `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime` in seconds. `onComplete` can be used to restart the elapsed time loop by returning an object with the following params: `shouldRepeat` indicates if the loop should start over; `delay` - delay before looping again in seconds; `newStartAt` set new start at value. |
+| Prop Name                   | Type                                                                                               | Default | Description                                                                                                                                                                                                                                                                                                                                                                                             |
+| --------------------------- | -------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| duration                    | number                                                                                             | -       | Animation duration in seconds                                                                                                                                                                                                                                                                                                                                                                           |
+| startAt                     | number                                                                                             | 0       | Shift the start time to a different value than 0                                                                                                                                                                                                                                                                                                                                                        |
+| shouldResetOnDurationChange | boolean                                                                                            | false   | Reset elapsed time when the duration changes                                                                                                                                                                                                                                                                                                                                                            |
+| onComplete                  | (totalElapsedTime: number) => void \| { shouldRepeat: boolean, delay: number, newStartAt: number } | -       | `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime` in seconds. `onComplete` can be used to restart the elapsed time loop by returning an object with the following params: `shouldRepeat` indicates if the loop should start over; `delay` - delay before looping again in seconds; `newStartAt` set new start at value. |
 
 ### Return value `{ elapsedTime, reset }`
 
