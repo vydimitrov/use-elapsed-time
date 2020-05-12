@@ -14,13 +14,13 @@ const useElapsedTime = (isPlaying, options = {}) => {
   const previousTimeRef = useRef(null)
   const repeatTimeoutRef = useRef(null)
   const didMountRef = useRef(true)
+  const isCompletedRef = useRef(false)
+  const resetDepRef = useRef(0)
 
-  const reset = useCallback(
-    (newStartAt = startAt) => {
-      setElapsedTime(newStartAt)
-    },
-    [startAt]
-  )
+  const reset = useCallback((newStartAt = startAt) => {
+    resetDepRef.current += 1
+    setElapsedTime(newStartAt)
+  }, [])
 
   const loop = (time) => {
     const timeSec = time / 1000
@@ -40,6 +40,9 @@ const useElapsedTime = (isPlaying, options = {}) => {
         return currentElapsedTime
       }
 
+      // duration is reached, mark it as completed
+      isCompletedRef.current = true
+
       if (typeof onComplete === 'function') {
         totalElapsedTime.current += duration * 1000
         // convert back to seconds
@@ -51,8 +54,6 @@ const useElapsedTime = (isPlaying, options = {}) => {
         if (shouldRepeat) {
           repeatTimeoutRef.current = setTimeout(() => {
             reset(newStartAt)
-            previousTimeRef.current = null
-            requestRef.current = requestAnimationFrame(loop)
           }, delay * 1000)
         }
       }
@@ -96,6 +97,16 @@ const useElapsedTime = (isPlaying, options = {}) => {
       reset()
     }
   }, [duration])
+
+  // target the case when reset is triggered after the duration is reached and playing is still set to true
+  // then the animation is played again
+  useLayoutEffect(() => {
+    if (isPlaying && isCompletedRef.current) {
+      isCompletedRef.current = false
+      cleanup()
+      requestRef.current = requestAnimationFrame(loop)
+    }
+  }, [resetDepRef.current])
 
   return { elapsedTime, reset }
 }

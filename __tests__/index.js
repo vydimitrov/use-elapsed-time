@@ -347,4 +347,26 @@ describe('useElapsedTime', () => {
     expect(clearTimeoutMock).toHaveBeenCalled()
     expect(cancelAnimationFrameMock).toHaveBeenCalled()
   })
+
+  it('should start playing again if reset is triggered after the duration is reached and isPlaying is still true', () => {
+    const isPlaying = true
+    const startAt = 0.25
+    const duration = 1
+    const options = { duration, startAt }
+
+    const { result } = renderHook(() => useElapsedTime(isPlaying, options))
+
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
+
+    expect(result.current.elapsedTime).toBe(1)
+
+    act(() => {
+      result.current.reset()
+    })
+
+    runTimers()
+  })
 })
