@@ -1,19 +1,14 @@
 import { useLayoutEffect, useState, useRef, useCallback } from 'react'
 
 const useElapsedTime = (isPlaying, options = {}) => {
-  const {
-    duration,
-    onComplete,
-    startAt = 0,
-    shouldResetOnDurationChange = false,
-  } = options
+  const { duration, onComplete, startAt = 0, autoResetKey } = options
 
   const [elapsedTime, setElapsedTime] = useState(startAt)
   const totalElapsedTime = useRef(startAt * -1000) // keep in milliseconds to avoid summing up floating point numbers
   const requestRef = useRef(null)
   const previousTimeRef = useRef(null)
   const repeatTimeoutRef = useRef(null)
-  const didMountRef = useRef(true)
+  const didJustMountRef = useRef(true)
   const isCompletedRef = useRef(false)
   const resetDepRef = useRef(0)
 
@@ -80,23 +75,20 @@ const useElapsedTime = (isPlaying, options = {}) => {
 
   // update on duration change
   useLayoutEffect(() => {
-    if (didMountRef.current) {
-      didMountRef.current = false
-      return
-    }
-
     // stop requestAnimationFrame if it is running and restart loop
     // thus the new duration can be taken in the new loop
-    if (isPlaying) {
+    if (isPlaying && !didJustMountRef.current) {
       cleanup()
       requestRef.current = requestAnimationFrame(loop)
     }
+  }, [duration])
 
-    // reset elapsed time when duration changes
-    if (shouldResetOnDurationChange) {
+  // auto reset the animation when the autoResetKey changes
+  useLayoutEffect(() => {
+    if (!didJustMountRef.current) {
       reset()
     }
-  }, [duration])
+  }, [autoResetKey])
 
   // target the case when reset is triggered after the duration is reached and playing is still set to true
   // then the animation is played again
@@ -107,6 +99,10 @@ const useElapsedTime = (isPlaying, options = {}) => {
       requestRef.current = requestAnimationFrame(loop)
     }
   }, [resetDepRef.current])
+
+  useLayoutEffect(() => {
+    didJustMountRef.current = false
+  }, [])
 
   return { elapsedTime, reset }
 }

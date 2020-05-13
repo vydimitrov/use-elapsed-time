@@ -20,8 +20,8 @@ export interface Options {
   duration?: number
   /** Start the animation at provided time in seconds. Default: 0 */
   startAt?: number
-  /** Reset elapsed time when the duration changes. Default: false */
-  shouldResetOnDurationChange?: boolean
+  /** Auto reset animation when the key changes. It works similar to React's key prop */
+  autoResetKey?: string | number
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
   onComplete?: (totalElapsedTime: number) => void | OnCompleteRepeat
 }

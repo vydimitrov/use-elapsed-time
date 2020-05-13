@@ -311,10 +311,14 @@ describe('useElapsedTime', () => {
     expect(result.current.elapsedTime).toBe(1.6)
   })
 
-  it('should reset elapsed time when duration changes and shouldResetOnDurationChange is set to true', () => {
+  it('should reset elapsed time when autoResetKey changes', () => {
     const isPlaying = true
     let duration = 1
-    let options = { duration, shouldResetOnDurationChange: true }
+    let options = {
+      duration,
+      shouldResetOnDurationChange: true,
+      autoResetKey: duration,
+    }
 
     const { result, rerender } = renderHook(() =>
       useElapsedTime(isPlaying, options)
