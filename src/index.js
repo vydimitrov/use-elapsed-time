@@ -12,9 +12,9 @@ const useElapsedTime = (isPlaying, options = {}) => {
   const isCompletedRef = useRef(false)
   const resetDepRef = useRef(0)
 
-  const reset = useCallback((newStartAt = startAt) => {
+  const reset = useCallback((newStartAt) => {
     resetDepRef.current += 1
-    setElapsedTime(newStartAt)
+    setElapsedTime(typeof newStartAt === 'number' ? newStartAt : startAt)
   }, [])
 
   const loop = (time) => {

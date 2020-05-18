@@ -288,6 +288,25 @@ describe('useElapsedTime', () => {
     expect(result.current.elapsedTime).toBe(0.123)
   })
 
+  it('should reset elapsed time to the previous startAt value if the new one passed to the reset method is not a number', () => {
+    const isPlaying = true
+    const startAt = 0.25
+    const duration = 1
+    const options = { duration, startAt }
+
+    const { result } = renderHook(() => useElapsedTime(isPlaying, options))
+
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
+    act(() => {
+      result.current.reset({})
+    })
+
+    expect(result.current.elapsedTime).toBe(0.25)
+  })
+
   it('should run the elapsed time to the new duration when it changes while the timer is playing', () => {
     const isPlaying = true
     let duration = 1
