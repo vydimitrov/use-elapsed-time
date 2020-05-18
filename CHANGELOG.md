@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.2 (May 18th, 2020)
+
+**Big fix:**
+
+- Reset method will now ignore any none number value passed to it and it will use the previous `startAt` value
+
 ## 2.1.1 (May 13th, 2020)
 
 **Implemented enhancements:**
