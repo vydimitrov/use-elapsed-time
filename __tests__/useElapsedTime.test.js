@@ -115,11 +115,13 @@ describe('useElapsedTime', () => {
     const options = { onComplete, duration }
 
     const { result } = renderHook(() => useElapsedTime(isPlaying, options))
-    testElapsedTime(result, duration)
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
 
     expect(onComplete).toHaveBeenCalled()
-
-    addFrame()
     expect(result.current.elapsedTime).toBe(duration)
     expect(onComplete).toHaveBeenCalledTimes(1)
     expect(setTimeout).toHaveBeenCalledTimes(0)
@@ -227,6 +229,7 @@ describe('useElapsedTime', () => {
 
     renderHook(() => useElapsedTime(isPlaying, options))
 
+    addFrame()
     addFrame()
     addFrame()
     addFrame()
@@ -366,6 +369,33 @@ describe('useElapsedTime', () => {
     const { unmount } = renderHook(() => useElapsedTime(isPlaying, options))
 
     unmount()
+
+    expect(clearTimeoutMock).toHaveBeenCalled()
+    expect(cancelAnimationFrameMock).toHaveBeenCalled()
+  })
+
+  it('should clear loop and timeout when isPlaying is set to true after the duration is reached', () => {
+    let isPlaying = true
+    const onComplete = jest.fn()
+    const options = { duration: 1, onComplete }
+
+    const clearTimeoutMock = jest.fn()
+    const cancelAnimationFrameMock = jest.fn()
+
+    window.clearTimeout = clearTimeoutMock
+    window.cancelAnimationFrame = cancelAnimationFrameMock
+
+    const { rerender } = renderHook(() => useElapsedTime(isPlaying, options))
+
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
+
+    expect(onComplete).toHaveBeenCalled()
+
+    isPlaying = false
+    rerender()
 
     expect(clearTimeoutMock).toHaveBeenCalled()
     expect(cancelAnimationFrameMock).toHaveBeenCalled()
