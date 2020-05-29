@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.1.3 (May 29th, 2020)
+
+**Big fix:**
+
+- SSR: use `useEffect` when environment is `node` or `window` is undefined. When the environment is browser `useLayoutEffect` should be used instead
+- Remove side effects from `useState` so `React.StrictMode` doesn't bug the hook in development
+- Add a test to ensure that timeout is cancelled when `isPlaying` is set to `false` when the duration is reached
+
 ## 2.1.2 (May 18th, 2020)
 
 **Big fix:**
