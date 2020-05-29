@@ -115,11 +115,13 @@ describe('useElapsedTime', () => {
     const options = { onComplete, duration }
 
     const { result } = renderHook(() => useElapsedTime(isPlaying, options))
-    testElapsedTime(result, duration)
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
 
     expect(onComplete).toHaveBeenCalled()
-
-    addFrame()
     expect(result.current.elapsedTime).toBe(duration)
     expect(onComplete).toHaveBeenCalledTimes(1)
     expect(setTimeout).toHaveBeenCalledTimes(0)
@@ -227,6 +229,7 @@ describe('useElapsedTime', () => {
 
     renderHook(() => useElapsedTime(isPlaying, options))
 
+    addFrame()
     addFrame()
     addFrame()
     addFrame()

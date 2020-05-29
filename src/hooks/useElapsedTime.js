@@ -26,36 +26,38 @@ const useElapsedTime = (isPlaying, options = {}) => {
       return
     }
 
+    const deltaTime = timeSec - previousTimeRef.current
+    previousTimeRef.current = timeSec
+
     setElapsedTime((prevTime) => {
-      const deltaTime = timeSec - previousTimeRef.current
       const currentElapsedTime = prevTime + deltaTime
 
       if (typeof duration !== 'number' || currentElapsedTime < duration) {
-        previousTimeRef.current = timeSec
-        requestRef.current = requestAnimationFrame(loop)
         return currentElapsedTime
       }
 
       // duration is reached, mark it as completed
       isCompletedRef.current = true
-
-      if (typeof onComplete === 'function') {
-        totalElapsedTime.current += duration * 1000
-        // convert back to seconds
-        const totalElapsedTimeSec = totalElapsedTime.current / 1000
-
-        const { shouldRepeat = false, delay = 0, newStartAt } =
-          onComplete(totalElapsedTimeSec) || {}
-
-        if (shouldRepeat) {
-          repeatTimeoutRef.current = setTimeout(() => {
-            reset(newStartAt)
-          }, delay * 1000)
-        }
-      }
-
       return duration
     })
+
+    if (!isCompletedRef.current) {
+      requestRef.current = requestAnimationFrame(loop)
+    } else if (typeof onComplete === 'function') {
+      console.log('done')
+      totalElapsedTime.current += duration * 1000
+      // convert back to seconds
+      const totalElapsedTimeSec = totalElapsedTime.current / 1000
+
+      const { shouldRepeat = false, delay = 0, newStartAt } =
+        onComplete(totalElapsedTimeSec) || {}
+
+      if (shouldRepeat) {
+        repeatTimeoutRef.current = setTimeout(() => {
+          reset(newStartAt)
+        }, delay * 1000)
+      }
+    }
   }
 
   // only for internal use
