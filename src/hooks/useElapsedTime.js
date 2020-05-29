@@ -44,7 +44,6 @@ const useElapsedTime = (isPlaying, options = {}) => {
     if (!isCompletedRef.current) {
       requestRef.current = requestAnimationFrame(loop)
     } else if (typeof onComplete === 'function') {
-      console.log('done')
       totalElapsedTime.current += duration * 1000
       // convert back to seconds
       const totalElapsedTimeSec = totalElapsedTime.current / 1000
