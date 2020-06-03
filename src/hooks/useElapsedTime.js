@@ -92,14 +92,16 @@ const useElapsedTime = (isPlaying, options = {}) => {
     }
   }, [autoResetKey])
 
-  // target the case when reset is triggered after the duration is reached and playing is still set to true
-  // then the animation is played again
   useIsomorphicLayoutEffect(() => {
+    // target the case when reset is triggered after the duration is reached and playing is still set to true
+    // then the animation is played again
     if (isPlaying && isCompletedRef.current) {
-      isCompletedRef.current = false
       cleanup()
       requestRef.current = requestAnimationFrame(loop)
     }
+
+    // mark it as not completed when the animation is reset
+    isCompletedRef.current = false
   }, [resetDepRef.current])
 
   useIsomorphicLayoutEffect(() => {

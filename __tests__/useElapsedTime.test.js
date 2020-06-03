@@ -404,7 +404,7 @@ describe('useElapsedTime', () => {
   it('should start playing again if reset is triggered after the duration is reached and isPlaying is still true', () => {
     const isPlaying = true
     const startAt = 0.25
-    const duration = 1
+    const duration = 1.2
     const options = { duration, startAt }
 
     const { result } = renderHook(() => useElapsedTime(isPlaying, options))
@@ -414,12 +414,46 @@ describe('useElapsedTime', () => {
     addFrame()
     addFrame()
 
-    expect(result.current.elapsedTime).toBe(1)
+    expect(result.current.elapsedTime).toBe(1.2)
+
+    act(() => {
+      result.current.reset(0)
+    })
+
+    runTimers()
+    testElapsedTime(result, 1.2)
+  })
+
+  it('should start playing when the animation is paused once it is done, reset is triggered and the animation is started again ', () => {
+    let isPlaying = true
+    const duration = 1.2
+    const options = { duration }
+
+    const { result, rerender } = renderHook(() =>
+      useElapsedTime(isPlaying, options)
+    )
+
+    addFrame()
+    addFrame()
+    addFrame()
+    addFrame()
+
+    // animation is completed
+    expect(result.current.elapsedTime).toBe(1.2)
+
+    // stop animation
+    isPlaying = false
+    rerender()
 
     act(() => {
       result.current.reset()
     })
 
+    // start animation
+    isPlaying = true
+    rerender()
+
     runTimers()
+    testElapsedTime(result, 1.2)
   })
 })

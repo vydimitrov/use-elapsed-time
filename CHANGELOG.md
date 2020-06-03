@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.4 (June 3rd, 2020)
+
+**Big fix:**
+
+- Fix an issue where pausing the animation once it is completed, resetting the timer and playing again it did not work.
+
 ## 2.1.3 (May 29th, 2020)
 
 **Big fix:**
