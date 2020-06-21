@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.5 (June 21st, 2020)
+
+**Big fix:**
+
+- A warning is thrown by React that it can not update state on unmounted component when the hook component is unmounted from the onComplete callback and the callback returns shouldRepeat = true. Originally reported bug - https://github.com/vydimitrov/react-countdown-circle-timer/issues/28#issuecomment-645471853
+
 ## 2.1.4 (June 3rd, 2020)
 
 **Big fix:**
