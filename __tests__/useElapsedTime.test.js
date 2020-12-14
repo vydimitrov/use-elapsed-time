@@ -163,7 +163,6 @@ describe('useElapsedTime', () => {
 
     testElapsedTime(result, duration)
 
-    expect(setTimeout).toHaveBeenCalledTimes(2)
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 300)
     expect(onComplete).toHaveBeenCalledTimes(2)
   })
