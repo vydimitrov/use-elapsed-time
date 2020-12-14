@@ -43,7 +43,7 @@
     "@babel/preset-react": "7.12.10",
     "@testing-library/react-hooks": "3.7.0",
     "babel-loader": "8.2.2",
-    "codecov": "3.7.1",
+    "codecov": "3.8.1",
     "react": "16.14.0",
     "jest": "25.4.0",
     "path": "0.12.7",
