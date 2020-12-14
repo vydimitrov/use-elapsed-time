@@ -45,7 +45,7 @@
     "babel-loader": "8.2.2",
     "codecov": "3.7.1",
     "react": "16.14.0",
-    "jest": "25.4.0",
+    "jest": "25.5.4",
     "path": "0.12.7",
     "raf-stub": "3.0.0",
     "prettier": "1.19.1",
