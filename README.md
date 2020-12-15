@@ -19,10 +19,6 @@ React hook to measure elapsed time using `requestAnimationFrame`. The time measu
 yarn add use-elapsed-time
 ```
 
-## Migrating from v1.x.x to v2.x.x?
-
-There are a few breaking changes to consider before switching to v2.x.x. Read [Migrate to v2.x.x](https://github.com/vydimitrov/use-elapsed-time/blob/master/MIGRATE_TO_V2.md) docs for more info.
-
 ## Basic usage
 
 ```jsx
