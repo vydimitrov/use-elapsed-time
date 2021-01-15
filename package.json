@@ -41,7 +41,7 @@
     "@babel/core": "7.12.10",
     "@babel/preset-env": "7.12.11",
     "@babel/preset-react": "7.12.10",
-    "@testing-library/react-hooks": "4.0.1",
+    "@testing-library/react-hooks": "5.0.0",
     "babel-loader": "8.2.2",
     "codecov": "3.8.1",
     "react": "17.0.1",
