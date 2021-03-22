@@ -50,7 +50,7 @@
     "raf-stub": "3.0.0",
     "prettier": "2.2.1",
     "react-test-renderer": "17.0.1",
-    "webpack": "5.25.1",
+    "webpack": "5.27.1",
     "webpack-cli": "4.5.0"
   }
 }
