@@ -1,6 +1,6 @@
 {
   "name": "use-elapsed-time",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "React hook to measure elapsed time using requestAnimationFrame",
   "main": "./lib/index.js",
   "files": [

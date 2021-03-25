@@ -1,8 +1,15 @@
 # Change Log
 
+## 2.1.7 (March 25th, 2021)
+
+**Chore:**
+
+- Update dependencies
+
 ## 2.1.6 (December 12th, 2020)
 
 **Chore:**
+
 - Add Renovate and dump the versions of all dependencies
 
 ## 2.1.5 (June 21st, 2020)
