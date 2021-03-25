@@ -32,7 +32,7 @@ const MyComponent = () => {
 }
 ```
 
-[Basic usage demo](https://codesandbox.io/s/epic-dream-hn62k)
+[![Edit epic-dream-hn62k](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/epic-dream-hn62k?fontsize=14&hidenavigation=1&theme=dark)
 
 ## Function signature
 
