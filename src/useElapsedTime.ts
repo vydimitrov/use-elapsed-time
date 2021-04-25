@@ -1,24 +1,37 @@
-import { useState, useRef, useCallback } from 'react'
-import { useIsomorphicLayoutEffect } from '.'
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+} from 'react'
+import type { Props, ReturnValue } from './types'
 
-const useElapsedTime = (isPlaying, options = {}) => {
-  const { duration, onComplete, startAt = 0, autoResetKey } = options
+const useIsomorphicEffect =
+  typeof window === 'undefined' ? useEffect : useLayoutEffect
 
+export const useElapsedTime = ({
+  isPlaying,
+  duration,
+  onComplete,
+  autoResetKey,
+  startAt = 0,
+}: Props): ReturnValue => {
   const [elapsedTime, setElapsedTime] = useState(startAt)
   const totalElapsedTime = useRef(startAt * -1000) // keep in milliseconds to avoid summing up floating point numbers
-  const requestRef = useRef(null)
-  const previousTimeRef = useRef(null)
-  const repeatTimeoutRef = useRef(null)
+  const requestRef = useRef<number | null>(null)
+  const previousTimeRef = useRef<number | null>(null)
+  const repeatTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isMountedRef = useRef(false)
   const isCompletedRef = useRef(false)
   const resetDepRef = useRef(0)
 
-  const reset = useCallback((newStartAt) => {
+  const reset = useCallback((newStartAt?: number) => {
     resetDepRef.current += 1
     setElapsedTime(typeof newStartAt === 'number' ? newStartAt : startAt)
   }, [])
 
-  const loop = (time) => {
+  const loop = (time: number) => {
     const timeSec = time / 1000
     if (previousTimeRef.current === null) {
       previousTimeRef.current = timeSec
@@ -43,7 +56,7 @@ const useElapsedTime = (isPlaying, options = {}) => {
 
     if (!isCompletedRef.current) {
       requestRef.current = requestAnimationFrame(loop)
-    } else if (typeof onComplete === 'function') {
+    } else if (typeof onComplete === 'function' && duration) {
       totalElapsedTime.current += duration * 1000
       // convert back to seconds
       const totalElapsedTimeSec = totalElapsedTime.current / 1000
@@ -61,12 +74,13 @@ const useElapsedTime = (isPlaying, options = {}) => {
 
   // only for internal use
   const cleanup = () => {
-    cancelAnimationFrame(requestRef.current)
-    clearTimeout(repeatTimeoutRef.current)
+    requestRef.current && cancelAnimationFrame(requestRef.current)
+    repeatTimeoutRef.current && clearTimeout(repeatTimeoutRef.current)
+
     previousTimeRef.current = null
   }
 
-  useIsomorphicLayoutEffect(() => {
+  useIsomorphicEffect(() => {
     if (isPlaying) {
       requestRef.current = requestAnimationFrame(loop)
     }
@@ -76,7 +90,7 @@ const useElapsedTime = (isPlaying, options = {}) => {
   }, [isPlaying])
 
   // update on duration change
-  useIsomorphicLayoutEffect(() => {
+  useIsomorphicEffect(() => {
     // stop requestAnimationFrame if it is running and restart loop
     // thus the new duration can be taken in the new loop
     if (isPlaying && isMountedRef.current) {
@@ -86,13 +100,13 @@ const useElapsedTime = (isPlaying, options = {}) => {
   }, [duration])
 
   // auto reset the animation when the autoResetKey changes
-  useIsomorphicLayoutEffect(() => {
+  useIsomorphicEffect(() => {
     if (isMountedRef.current) {
       reset()
     }
   }, [autoResetKey])
 
-  useIsomorphicLayoutEffect(() => {
+  useIsomorphicEffect(() => {
     // target the case when reset is triggered after the duration is reached and playing is still set to true
     // then the animation is played again
     if (isPlaying && isCompletedRef.current) {
@@ -106,7 +120,7 @@ const useElapsedTime = (isPlaying, options = {}) => {
 
   // the last effect should set isMounted to true
   // keep this effect always last
-  useIsomorphicLayoutEffect(() => {
+  useIsomorphicEffect(() => {
     isMountedRef.current = true
     return () => {
       isMountedRef.current = false
@@ -115,5 +129,3 @@ const useElapsedTime = (isPlaying, options = {}) => {
 
   return { elapsedTime, reset }
 }
-
-export { useElapsedTime }

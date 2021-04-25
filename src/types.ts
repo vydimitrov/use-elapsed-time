@@ -1,11 +1,11 @@
-export interface ElapsedTimeReturnValue {
+export interface ReturnValue {
   /** Current elapsed time in seconds */
   elapsedTime: number
   /** Reset method to reset the elapsed time and start over from the "startAt" value */
   reset: (newStartAt: number) => void
 }
 
-export interface OnCompleteRepeat {
+export interface OnComplete {
   /** Indicates if the loop should start over. Default: false */
   shouldRepeat?: boolean
   /** Delay in seconds before looping again. Default: 0 */
@@ -14,8 +14,9 @@ export interface OnCompleteRepeat {
   newStartAt?: number
 }
 
-/** Optional configuration object */
-export interface Options {
+export interface Props {
+  /** Animation duration in seconds */
+  isPlaying: boolean
   /** Animation duration in seconds */
   duration?: number
   /** Start the animation at provided time in seconds. Default: 0 */
@@ -23,10 +24,5 @@ export interface Options {
   /** Auto reset animation when the key changes. It works similar to React's key prop */
   autoResetKey?: string | number
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
-  onComplete?: (totalElapsedTime: number) => void | OnCompleteRepeat
+  onComplete?: (totalElapsedTime: number) => OnComplete | void
 }
-
-export function useElapsedTime(
-  isPlaying: boolean,
-  options?: Options
-): ElapsedTimeReturnValue

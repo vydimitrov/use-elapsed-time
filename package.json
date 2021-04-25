@@ -1,18 +1,19 @@
 {
   "name": "use-elapsed-time",
-  "version": "2.1.7",
+  "version": "3.0.0",
   "description": "React hook to measure elapsed time using requestAnimationFrame",
   "main": "./lib/index.js",
+  "module": "./lib/index.module.js",
+  "types": "./lib/index.d.ts",
   "files": [
-    "lib",
-    "types"
+    "lib"
   ],
-  "types": "types/use-elapsed-time.d.ts",
   "scripts": {
-    "build": "webpack",
+    "start": "node scripts/serve.js",
+    "ts-declaration": "tsc --declaration --emitDeclarationOnly --outDir lib",
+    "build": "yarn ts-declaration && node scripts/build.js",
     "test": "jest --collectCoverage --coverageDirectory=\"coverage\"",
     "test-watch": "jest --watch",
-    "dev:push": "yarn build && yalc push",
     "prepublish": "yarn build"
   },
   "repository": {
@@ -22,10 +23,10 @@
   "keywords": [
     "react",
     "hook",
-    "hooks",
     "requestAnimationFrame",
     "animation",
     "loop",
+    "elapsed",
     "time"
   ],
   "author": "Vasil Dimitrov",
@@ -38,19 +39,14 @@
     "react": ">=16.8.0"
   },
   "devDependencies": {
-    "@babel/core": "7.13.15",
-    "@babel/preset-env": "7.13.15",
-    "@babel/preset-react": "7.13.13",
     "@testing-library/react-hooks": "5.1.1",
-    "babel-loader": "8.2.2",
     "codecov": "3.8.1",
-    "react": "17.0.2",
+    "esbuild": "^0.11.12",
     "jest": "26.6.3",
-    "path": "0.12.7",
-    "raf-stub": "3.0.0",
     "prettier": "2.2.1",
-    "react-test-renderer": "17.0.2",
-    "webpack": "5.31.2",
-    "webpack-cli": "4.6.0"
+    "raf-stub": "3.0.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "typescript": "^4.2.4"
   }
 }
