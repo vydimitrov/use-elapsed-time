@@ -3,16 +3,17 @@
   "version": "2.1.8",
   "description": "React hook to measure elapsed time using requestAnimationFrame",
   "main": "./lib/index.js",
+  "module": "./lib/index.module.js",
+  "types": "./lib/index.d.ts",
   "files": [
-    "lib",
-    "types"
+    "lib"
   ],
-  "types": "types/use-elapsed-time.d.ts",
   "scripts": {
-    "build": "webpack",
+    "start": "node scripts/serve.js",
+    "ts-declaration": "tsc --declaration --emitDeclarationOnly --outDir lib",
+    "build": "yarn ts-declaration && node scripts/build.js",
     "test": "jest --collectCoverage --coverageDirectory=\"coverage\"",
     "test-watch": "jest --watch",
-    "dev:push": "yarn build && yalc push",
     "prepublish": "yarn build"
   },
   "repository": {
@@ -22,10 +23,10 @@
   "keywords": [
     "react",
     "hook",
-    "hooks",
     "requestAnimationFrame",
     "animation",
     "loop",
+    "elapsed",
     "time"
   ],
   "author": "Vasil Dimitrov",
