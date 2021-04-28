@@ -5,6 +5,8 @@
   "main": "./lib/index.js",
   "module": "./lib/index.module.js",
   "types": "./lib/index.d.ts",
+  "author": "Vasil Dimitrov",
+  "license": "MIT",
   "files": [
     "lib"
   ],
@@ -29,8 +31,6 @@
     "elapsed",
     "time"
   ],
-  "author": "Vasil Dimitrov",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/vydimitrov/use-elapsed-time/issues"
   },

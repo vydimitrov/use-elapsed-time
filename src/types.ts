@@ -2,7 +2,7 @@ export interface ReturnValue {
   /** Current elapsed time in seconds */
   elapsedTime: number
   /** Reset method to reset the elapsed time and start over from the "startAt" value */
-  reset: (newStartAt: number) => void
+  reset: (newStartAt?: number) => void
 }
 
 export interface OnComplete {
