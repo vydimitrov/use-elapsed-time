@@ -52,5 +52,10 @@
     "react-test-renderer": "17.0.2",
     "webpack": "5.36.2",
     "webpack-cli": "4.6.0"
-  }
+  },
+   "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
