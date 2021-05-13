@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.1.8 (May 13th, 2021)
+
+**Chore:**
+
+- Update dependencies
+- Add list of supported browsers
+
 ## 2.1.7 (March 25th, 2021)
 
 **Chore:**
