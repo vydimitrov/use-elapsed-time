@@ -23,13 +23,8 @@ export const useElapsedTime = ({
   const previousTimeRef = useRef<number | null>(null)
   const repeatTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isMountedRef = useRef(false)
-  const isCompletedRef = useRef(false)
-  const resetDepRef = useRef(0)
-
-  const reset = useCallback((newStartAt?: number) => {
-    resetDepRef.current += 1
-    setElapsedTime(typeof newStartAt === 'number' ? newStartAt : startAt)
-  }, [])
+  const durationRef = useRef(duration)
+  durationRef.current = duration
 
   const loop = (time: number) => {
     const timeSec = time / 1000
@@ -39,36 +34,21 @@ export const useElapsedTime = ({
       return
     }
 
+    let isCompleted = false
     const deltaTime = timeSec - previousTimeRef.current
     previousTimeRef.current = timeSec
 
     setElapsedTime((prevTime) => {
       const currentElapsedTime = prevTime + deltaTime
+      isCompleted =
+        typeof durationRef.current === 'number' &&
+        currentElapsedTime >= durationRef.current
 
-      if (typeof duration !== 'number' || currentElapsedTime < duration) {
-        return currentElapsedTime
-      }
-
-      // duration is reached, mark it as completed
-      isCompletedRef.current = true
-      return duration
+      return isCompleted ? durationRef.current! : currentElapsedTime
     })
 
-    if (!isCompletedRef.current) {
+    if (!isCompleted) {
       requestRef.current = requestAnimationFrame(loop)
-    } else if (typeof onComplete === 'function' && duration) {
-      totalElapsedTime.current += duration * 1000
-      // convert back to seconds
-      const totalElapsedTimeSec = totalElapsedTime.current / 1000
-
-      const { shouldRepeat = false, delay = 0, newStartAt } =
-        onComplete(totalElapsedTimeSec) || {}
-
-      if (shouldRepeat && isMountedRef.current) {
-        repeatTimeoutRef.current = setTimeout(() => {
-          reset(newStartAt)
-        }, delay * 1000)
-      }
     }
   }
 
@@ -76,56 +56,48 @@ export const useElapsedTime = ({
   const cleanup = () => {
     requestRef.current && cancelAnimationFrame(requestRef.current)
     repeatTimeoutRef.current && clearTimeout(repeatTimeoutRef.current)
-
     previousTimeRef.current = null
   }
+
+  const reset = useCallback(
+    (newStartAt?: number) => {
+      setElapsedTime(typeof newStartAt === 'number' ? newStartAt : startAt)
+      if (isPlaying) {
+        cleanup()
+        requestRef.current = requestAnimationFrame(loop)
+      }
+    },
+    [isPlaying]
+  )
+  useIsomorphicEffect(() => {
+    if (duration && elapsedTime >= duration) {
+      totalElapsedTime.current += duration * 1000
+
+      const { shouldRepeat = false, delay = 0, newStartAt } =
+        onComplete?.(totalElapsedTime.current / 1000) || {}
+
+      if (shouldRepeat) {
+        repeatTimeoutRef.current = setTimeout(() => {
+          reset(newStartAt)
+        }, delay * 1000)
+      }
+    }
+  }, [elapsedTime, duration])
 
   useIsomorphicEffect(() => {
     if (isPlaying) {
       requestRef.current = requestAnimationFrame(loop)
     }
 
-    // this will ALSO clear the loop before unmounting
     return cleanup
   }, [isPlaying])
 
-  // update on duration change
-  useIsomorphicEffect(() => {
-    // stop requestAnimationFrame if it is running and restart loop
-    // thus the new duration can be taken in the new loop
-    if (isPlaying && isMountedRef.current) {
-      cleanup()
-      requestRef.current = requestAnimationFrame(loop)
-    }
-  }, [duration])
-
   // auto reset the animation when the autoResetKey changes
   useIsomorphicEffect(() => {
-    if (isMountedRef.current) {
-      reset()
-    }
-  }, [autoResetKey])
-
-  useIsomorphicEffect(() => {
-    // target the case when reset is triggered after the duration is reached and playing is still set to true
-    // then the animation is played again
-    if (isPlaying && isCompletedRef.current) {
-      cleanup()
-      requestRef.current = requestAnimationFrame(loop)
-    }
-
-    // mark it as not completed when the animation is reset
-    isCompletedRef.current = false
-  }, [resetDepRef.current])
-
-  // the last effect should set isMounted to true
-  // keep this effect always last
-  useIsomorphicEffect(() => {
+    isMountedRef.current && reset()
+    // set isMounted in the last effect
     isMountedRef.current = true
-    return () => {
-      isMountedRef.current = false
-    }
-  }, [])
+  }, [autoResetKey])
 
   return { elapsedTime, reset }
 }
