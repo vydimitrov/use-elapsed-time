@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 import { useElapsedTime } from './useElapsedTime'
-import type { Props } from './types'
+import type { Props } from './useElapsedTime'
 
 jest.setTimeout(5000)
 
@@ -107,16 +107,6 @@ describe('useElapsedTime', () => {
     jest.useRealTimers()
   })
 
-  it('resets timer and start over using the new startAt when onComplete shouldRepeat = true, newStartAt = 0.2', async () => {
-    const newStartAt = 0.2
-    const onComplete = jest.fn(() => ({ shouldRepeat: true, newStartAt }))
-    const props = { isPlaying: true, duration: 1, startAt: 0.5, onComplete }
-    const { result, waitFor } = setupHook(props)
-
-    expect(result.current.elapsedTime).toBe(props.startAt)
-    await waitFor(() => expect(result.current.elapsedTime).toBe(newStartAt))
-  })
-
   it('starts and stops animation loop by toggling isPlaying', async () => {
     const props = { isPlaying: true, duration: 4 }
     const { result, rerender, waitFor } = setupHook(props)
@@ -163,18 +153,6 @@ describe('useElapsedTime', () => {
     expect(result.current.elapsedTime).toBe(props.startAt)
   })
 
-  it('reset elapsed time to the new startAt value passed in the reset method when it is fired', () => {
-    const newStartAt = 0.123
-    const props = { isPlaying: true, duration: 1, startAt: 0.25 }
-    const { result } = setupHook(props)
-
-    act(() => {
-      result.current.reset(newStartAt)
-    })
-
-    expect(result.current.elapsedTime).toBe(newStartAt)
-  })
-
   it('returns the new duration when it changes while the timer is playing', async () => {
     const props = { isPlaying: true, duration: 0.3 }
     const { result, rerender, waitFor } = setupHook(props)
@@ -185,18 +163,6 @@ describe('useElapsedTime', () => {
     rerender()
 
     await waitFor(() => expect(result.current.elapsedTime).toBe(props.duration))
-  })
-
-  it('resets elapsed time when autoResetKey changes', async () => {
-    const props = { isPlaying: true, duration: 0.46, autoResetKey: 'one' }
-    const { result, rerender, waitFor } = setupHook(props)
-
-    await waitFor(() => expect(result.current.elapsedTime).toBeGreaterThan(0.1))
-
-    props.autoResetKey = 'two'
-    rerender()
-
-    expect(result.current.elapsedTime).toBe(0)
   })
 
   it('clears animation loop when the component is unmounted', () => {
@@ -230,15 +196,15 @@ describe('useElapsedTime', () => {
 
   it('starts playing again if reset is triggered after the duration is reached and isPlaying is still true', async () => {
     const props = { isPlaying: true, duration: 0.89, startAt: 0.25 }
-    const { result, rerender, waitFor } = setupHook(props)
+    const { result, waitFor } = setupHook(props)
 
     await waitFor(() => expect(result.current.elapsedTime).toBe(props.duration))
 
     act(() => {
-      result.current.reset(0)
+      result.current.reset()
     })
 
-    await waitFor(() => expect(result.current.elapsedTime).toBe(0))
+    await waitFor(() => expect(result.current.elapsedTime).toBe(0.25))
     await waitFor(() => expect(result.current.elapsedTime).toBe(props.duration))
   })
 
@@ -263,5 +229,32 @@ describe('useElapsedTime', () => {
 
     await waitFor(() => expect(result.current.elapsedTime).toBe(0))
     await waitFor(() => expect(result.current.elapsedTime).toBe(props.duration))
+  })
+
+  it('returns the elapsed time according to the updateInterval prop and fires onUpdate when time changes', async () => {
+    const waitForProps = { timeout: 1200 }
+    const props = {
+      isPlaying: true,
+      duration: 3,
+      updateInterval: 1,
+      onUpdate: jest.fn(),
+    }
+    const { result, waitFor } = setupHook(props)
+
+    await waitFor(
+      () => expect(result.current.elapsedTime).toBe(1),
+      waitForProps
+    )
+    expect(props.onUpdate).toHaveBeenCalledWith(1)
+    await waitFor(
+      () => expect(result.current.elapsedTime).toBe(2),
+      waitForProps
+    )
+    expect(props.onUpdate).toHaveBeenCalledWith(2)
+    await waitFor(
+      () => expect(result.current.elapsedTime).toBe(3),
+      waitForProps
+    )
+    expect(props.onUpdate).toHaveBeenCalledWith(3)
   })
 })
