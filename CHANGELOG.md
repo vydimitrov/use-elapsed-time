@@ -1,5 +1,21 @@
 # Change Log
 
+## 3.0.0 ( ----- , 2021)
+
+The hooks is now written in TypeScript.
+
+**Breaking Changes:**
+
+- IE is not longer supported
+- `autoResetKey` props has been deprecated
+- `reset` method of the hook return value no longer accepts `newStartAt`. When it is fired the animation will start over from the initially provided `startAt` value
+- `onComplete` return value does not accept `newStartAt`
+
+**New features:**
+
+- `updateInterval` prop now controls how often the hook should rerender. It takes a number in seconds as an argument
+- `onUpdate` prop will be fired when the `elapsedTime` changes
+
 ## 2.1.7 (March 25th, 2021)
 
 **Chore:**

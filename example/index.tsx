@@ -3,8 +3,12 @@ import ReactDOM from 'react-dom'
 import { useElapsedTime } from '../src/index'
 
 const ElapsedTime = () => {
-  const isPlaying = true
-  const { elapsedTime } = useElapsedTime({ isPlaying, duration: 5 })
+  const { elapsedTime } = useElapsedTime({
+    isPlaying: true,
+    duration: 5,
+    updateInterval: 1.5,
+    onUpdate: () => console.log('yes'),
+  })
 
   return <span>{elapsedTime}</span>
 }
