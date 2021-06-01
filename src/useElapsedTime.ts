@@ -28,7 +28,7 @@ export interface Props {
   updateInterval?: number
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
   onComplete?: (totalElapsedTime: number) => OnComplete | void
-  /** On time update callback. It receives the current elapsedTime time in seconds*/
+  /** On time update event handler. It receives the current elapsedTime time in seconds*/
   onUpdate?: (elapsedTime: number) => void
 }
 
@@ -95,9 +95,11 @@ export const useElapsedTime = ({
   }
 
   const reset = useCallback(() => {
+    cleanup()
+    loopRef.current = { ...loopRef.current, elapsedTimeRef: startAt }
     setElapsedTime(startAt)
+
     if (isPlaying) {
-      cleanup()
       requestRef.current = requestAnimationFrame(loop)
     }
   }, [isPlaying])
