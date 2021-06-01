@@ -13,8 +13,8 @@ The hooks is now written in TypeScript.
 
 **New features:**
 
-- `updateInterval` prop now controls how often the hook should rerender. It accepts a number in seconds
-- `onUpdate` prop will be fired when the `elapsedTime` changes
+- `updateInterval` prop now controls how often the hook should rerender. Set as a number in seconds
+- `onUpdate` callback will be fired with the current elapsed time when the `elapsedTime` changes.
 
 **Chore:**
 
