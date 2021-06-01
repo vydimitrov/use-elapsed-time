@@ -59,13 +59,13 @@ const MyComponent = () => {
 | onComplete     | (totalElapsedTime: number) => void \| { shouldRepeat: boolean, delay: number } | -       | `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime` in seconds. `onComplete` can be used to restart the elapsed time loop by returning an object with the following params: `shouldRepeat` indicates if the loop should start over; `delay` - delay before looping again in seconds |
 | onUpdate       | (elapsedTime: number) => void                                                  | -       | On time update event handler. It receives the current elapsedTime time in seconds                                                                                                                                                                                                                                                                                 |
 
-### Return value `{ elapsedTime, reset }`
+### Return value
 
-The hook returns an object with `elapsedTime` in seconds and `reset` method.
+The hook returns an object with `elapsedTime` in seconds and `reset` method - `{ elapsedTime, reset }`
 
 ### Browser support
 
-The `useElapsedTime` hook supports all modern browsers - Chrome, Firefox, Edge, Safari. Internet Explorer (IE) is not longer supported.
+The hook supports all modern browsers - Chrome, Firefox, Edge, Safari. Internet Explorer (IE) is not longer supported.
 
 ## Use cases
 
