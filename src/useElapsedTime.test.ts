@@ -25,6 +25,19 @@ describe('useElapsedTime', () => {
     expect(result.current.elapsedTime).toBe(props.startAt)
   })
 
+  it.only('updates time with respect to updateInterval prop starting at the statAt value', async () => {
+    const props = { isPlaying: true, startAt: 1, updateInterval: 2 }
+    const { result, waitFor } = setupHook(props)
+
+    await waitFor(() => expect(result.current.elapsedTime).toBe(3), {
+      timeout: 2200,
+    })
+
+    await waitFor(() => expect(result.current.elapsedTime).toBe(5), {
+      timeout: 2200,
+    })
+  })
+
   it('returns the elapsed time for duration of 1.2 seconds starting at 0.4 seconds', async () => {
     const props = { isPlaying: true, duration: 1.2, startAt: 0.4 }
     const { result, waitFor } = setupHook(props)
