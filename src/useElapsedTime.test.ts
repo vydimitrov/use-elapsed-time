@@ -25,7 +25,7 @@ describe('useElapsedTime', () => {
     expect(result.current.elapsedTime).toBe(props.startAt)
   })
 
-  it.only('updates time with respect to updateInterval prop starting at the statAt value', async () => {
+  it('updates time with respect to updateInterval prop starting at the statAt value', async () => {
     const props = { isPlaying: true, startAt: 1, updateInterval: 2 }
     const { result, waitFor } = setupHook(props)
 
