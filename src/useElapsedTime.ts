@@ -46,14 +46,16 @@ export const useElapsedTime = ({
   const previousTimeRef = useRef<MayBe<number>>(null)
   const repeatTimeoutRef = useRef<MayBe<NodeJS.Timeout>>(null)
   const loopRef = useRef({
-    elapsedTimeRef: elapsedTime,
+    elapsedTimeRef: 0,
     durationRef: duration,
     updateIntervalRef: updateInterval,
+    startAtRef: startAt,
   })
   loopRef.current = {
     ...loopRef.current,
     durationRef: duration,
     updateIntervalRef: updateInterval,
+    startAtRef: startAt,
   }
 
   const loop = (time: number) => {
@@ -65,7 +67,12 @@ export const useElapsedTime = ({
     }
 
     // get current elapsed time
-    const { durationRef, elapsedTimeRef, updateIntervalRef } = loopRef.current
+    const {
+      durationRef,
+      elapsedTimeRef,
+      updateIntervalRef,
+      startAtRef,
+    } = loopRef.current
     const deltaTime = timeSec - previousTimeRef.current
     const currentElapsedTime = elapsedTimeRef + deltaTime
 
@@ -75,9 +82,10 @@ export const useElapsedTime = ({
 
     // set current display time
     const currentDisplayTime =
-      updateIntervalRef === 0
+      startAtRef +
+      (updateIntervalRef === 0
         ? currentElapsedTime
-        : (currentElapsedTime | 0) * updateIntervalRef
+        : (currentElapsedTime | 0) * updateIntervalRef)
     const isCompleted =
       typeof durationRef === 'number' && currentDisplayTime >= durationRef
     setElapsedTime(isCompleted ? durationRef! : currentDisplayTime)
@@ -96,7 +104,7 @@ export const useElapsedTime = ({
 
   const reset = useCallback(() => {
     cleanup()
-    loopRef.current = { ...loopRef.current, elapsedTimeRef: startAt }
+    loopRef.current = { ...loopRef.current, elapsedTimeRef: 0 }
     setElapsedTime(startAt)
 
     if (isPlaying) {

@@ -6,9 +6,12 @@ const ElapsedTime = () => {
   const [isPlaying, setIsPlaying] = useState(true)
   const { elapsedTime, reset } = useElapsedTime({
     isPlaying,
-    startAt: 4,
-    updateInterval: 3,
+    duration: 10,
+    startAt: 4.2,
     onComplete: () => ({ shouldRepeat: true, delay: 2 }),
+    onUpdate: (value) => {
+      console.log(`Current elapsed time is ${value} seconds`)
+    },
   })
 
   return (
