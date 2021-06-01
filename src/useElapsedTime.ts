@@ -18,7 +18,7 @@ export interface OnComplete {
 }
 
 export interface Props {
-  /** Animation duration in seconds */
+  /** Indicates if the loop to get the elapsed time is running or it is paused */
   isPlaying: boolean
   /** Animation duration in seconds */
   duration?: number
@@ -28,7 +28,7 @@ export interface Props {
   updateInterval?: number
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
   onComplete?: (totalElapsedTime: number) => OnComplete | void
-  /** On time update event handler. It receives the current elapsedTime time in seconds*/
+  /** On time update event handler. It receives the current elapsedTime time in seconds */
   onUpdate?: (elapsedTime: number) => void
 }
 

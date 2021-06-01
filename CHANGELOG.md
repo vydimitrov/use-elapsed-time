@@ -7,6 +7,10 @@
 - Update dependencies
 - Add list of supported browsers
 
+**Chore:**
+
+- example folder is added, which can we be used for development or testing the hook
+
 ## 2.1.7 (March 25th, 2021)
 
 **Chore:**
