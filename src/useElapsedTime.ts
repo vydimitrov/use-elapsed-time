@@ -24,7 +24,7 @@ export interface Props {
   duration?: number
   /** Start the animation at provided time in seconds. Default: 0 */
   startAt?: number
-  /** Update interval in seconds. Determines how often the component will rerender. When set to 0 the component will rerender on each key frame. Default: 0 */
+  /** Update interval in seconds. Determines how often the elapsed time value will change. When set to 0 the value will update on each key frame. Default: 0 */
   updateInterval?: number
   /** On animation complete event handler. It can be used to restart/repeat the animation by returning an object */
   onComplete?: (totalElapsedTime: number) => OnComplete | void
