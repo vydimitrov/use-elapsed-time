@@ -9,8 +9,7 @@ React hook to measure elapsed time using `requestAnimationFrame`. The time measu
 
 - Toggle play/pause
 - Set start time and duration
-- Easily repeat the measurement
-- Combine with [any easing function](http://www.gizma.com/easing/#l) to get the right animation
+- Adjust update interval to your need
 
 ## Installation
 
@@ -55,7 +54,7 @@ const MyComponent = () => {
 | isPlaying      | boolean                                                                        | -       | Indicates if the loop to get the elapsed time is running or it is paused                                                                                                                                                                                                                                                                                          |
 | duration       | number                                                                         | -       | Animation duration in seconds                                                                                                                                                                                                                                                                                                                                     |
 | startAt        | number                                                                         | 0       | Shift the start time to a different value than 0                                                                                                                                                                                                                                                                                                                  |
-| updateInterval | number                                                                         | 0       | Update interval in seconds. Determines how often the component will rerender. When set to 0 the component will rerender on each key frame                                                                                                                                                                                                                         |
+| updateInterval | number                                                                         | 0       | Update interval in seconds. Determines how often the elapsed time value will change. When set to 0 the value will update on each key frame                                                                                                                                                                                                                        |
 | onComplete     | (totalElapsedTime: number) => void \| { shouldRepeat: boolean, delay: number } | -       | `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime` in seconds. `onComplete` can be used to restart the elapsed time loop by returning an object with the following params: `shouldRepeat` indicates if the loop should start over; `delay` - delay before looping again in seconds |
 | onUpdate       | (elapsedTime: number) => void                                                  | -       | On time update event handler. It receives the current elapsedTime time in seconds                                                                                                                                                                                                                                                                                 |
 

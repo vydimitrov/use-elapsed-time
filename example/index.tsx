@@ -8,6 +8,7 @@ const ElapsedTime = () => {
     isPlaying,
     duration: 10,
     startAt: 4.2,
+    updateInterval: 2.5,
     onComplete: () => ({ shouldRepeat: true, delay: 2 }),
     onUpdate: (value) => {
       console.log(`Current elapsed time is ${value} seconds`)
