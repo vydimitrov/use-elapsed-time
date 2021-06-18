@@ -9,9 +9,7 @@ React hook to measure elapsed time using `requestAnimationFrame`. The time measu
 
 - Toggle play/pause
 - Set start time and duration
-- Easily repeat the measurement
-- Combine with [any easing function](http://www.gizma.com/easing/#l) to get the right animation
-- Built-in and ready-to-use TypeScript type definitions.
+- Adjust update interval to your need
 
 ## Installation
 
@@ -25,8 +23,7 @@ yarn add use-elapsed-time
 import { useElapsedTime } from 'use-elapsed-time'
 
 const MyComponent = () => {
-  const isPlaying = true
-  const { elapsedTime } = useElapsedTime(isPlaying)
+  const { elapsedTime } = useElapsedTime({ isPlaying: true })
 
   return elapsedTime
 }
@@ -37,40 +34,37 @@ const MyComponent = () => {
 ## Function signature
 
 ```js
-  function useElapsedTime(
-    isPlaying: boolean,
-    options?: {
-      duration?: number,
-      startAt?: number,
-      autoResetKey?: string | number,
-      onComplete?: (totalElapsedTime: number) => void | { shouldRepeat: boolean, delay: number, newStartAt: number }
-    }
-  ): {
+  const {
     elapsedTime: number,
-    reset?: (newStartAt: number) => void
-  }
+    reset: () => void
+  } = useElapsedTime({
+    isPlaying: boolean,
+    duration?: number,
+    startAt?: number,
+    updateInterval?: number,
+    onComplete?: (totalElapsedTime: number) => void | { shouldRepeat: boolean, delay: number },
+    onUpdate?: (elapsedTime: number) => void
+  })
 ```
 
-### 1st arg. `isPlaying: boolean`
+## Props
 
-> Default: `isPlaying = false`
+| Prop Name      | Type                                                                           | Default | Description                                                                                                                                                                                                                                                                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| isPlaying      | boolean                                                                        | -       | Indicates if the loop to get the elapsed time is running or it is paused                                                                                                                                                                                                                                                                                          |
+| duration       | number                                                                         | -       | Animation duration in seconds                                                                                                                                                                                                                                                                                                                                     |
+| startAt        | number                                                                         | 0       | Shift the start time to a different value than 0                                                                                                                                                                                                                                                                                                                  |
+| updateInterval | number                                                                         | 0       | Update interval in seconds. Determines how often the elapsed time value will change. When set to 0 the value will update on each key frame                                                                                                                                                                                                                        |
+| onComplete     | (totalElapsedTime: number) => void \| { shouldRepeat: boolean, delay: number } | -       | `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime` in seconds. `onComplete` can be used to restart the elapsed time loop by returning an object with the following params: `shouldRepeat` indicates if the loop should start over; `delay` - delay before looping again in seconds |
+| onUpdate       | (elapsedTime: number) => void                                                  | -       | On time update event handler. It receives the current elapsedTime time in seconds                                                                                                                                                                                                                                                                                 |
 
-Indicates if the loop to get the elapsed time is running or it is paused.
+## Return value
 
-### 2nd arg. `options: object`
+The hook returns an object with `elapsedTime` in seconds and `reset` method - `{ elapsedTime, reset }`
 
-> Default: `options = {}`
+## Browser support
 
-| Prop Name    | Type                                                                                               | Default | Description                                                                                                                                                                                                                                                                                                                                                                                             |
-| ------------ | -------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| duration     | number                                                                                             | -       | Animation duration in seconds                                                                                                                                                                                                                                                                                                                                                                           |
-| startAt      | number                                                                                             | 0       | Shift the start time to a different value than 0                                                                                                                                                                                                                                                                                                                                                        |
-| autoResetKey | string \| number                                                                                   | -       | Auto reset animation when the key changes. It works similar to React's `key` prop                                                                                                                                                                                                                                                                                                                       |
-| onComplete   | (totalElapsedTime: number) => void \| { shouldRepeat: boolean, delay: number, newStartAt: number } | -       | `onComplete` callback will be fired when the duration is reached. The callback will receive as an argument the `totalElapsedTime` in seconds. `onComplete` can be used to restart the elapsed time loop by returning an object with the following params: `shouldRepeat` indicates if the loop should start over; `delay` - delay before looping again in seconds; `newStartAt` set new start at value. |
-
-### Return value `{ elapsedTime, reset }`
-
-The hook returns an object with `elapsedTime` in seconds and `reset` method.
+The hook supports [all modern browsers](https://caniuse.com/?search=es6) targeting `es6`. Internet Explorer (IE) is not longer supported.
 
 ## Use cases
 
