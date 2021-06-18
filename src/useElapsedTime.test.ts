@@ -99,8 +99,6 @@ describe('useElapsedTime', () => {
   })
 
   it('resets timer and start over in 0.3 seconds when onComplete returns shouldRepeat = true and delay = 0.3', async () => {
-    jest.useFakeTimers()
-
     const setTimeoutSpy = jest.spyOn(window, 'setTimeout')
     const onComplete = jest.fn(() => ({ shouldRepeat: true, delay: 0.3 }))
     const props = { isPlaying: true, duration: 0.24, onComplete }
@@ -109,15 +107,11 @@ describe('useElapsedTime', () => {
     await waitFor(() => expect(result.current.elapsedTime).toBe(props.duration))
     expect(onComplete).toHaveBeenCalledTimes(1)
 
-    act(() => {
-      jest.runOnlyPendingTimers()
-    })
-
+    await waitFor(() => expect(result.current.elapsedTime).toBe(0))
     await waitFor(() => expect(result.current.elapsedTime).toBe(props.duration))
+
     expect(setTimeoutSpy).toHaveBeenLastCalledWith(expect.any(Function), 300)
     expect(onComplete).toHaveBeenCalledTimes(2)
-
-    jest.useRealTimers()
   })
 
   it('starts and stops animation loop by toggling isPlaying', async () => {
