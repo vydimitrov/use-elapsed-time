@@ -64,7 +64,7 @@ The hook returns an object with `elapsedTime` in seconds and `reset` method - `{
 
 ## Browser support
 
-The hook supports all modern browsers - Chrome, Firefox, Edge, Safari. Internet Explorer (IE) is not longer supported.
+The hook supports [all modern browsers](https://caniuse.com/?search=es6) targeting `es6`. Internet Explorer (IE) is not longer supported.
 
 ## Use cases
 
