@@ -1,6 +1,6 @@
 # Change Log
 
-## 3.0.0 ( ----- , 2021)
+## 3.0.0 ( June 18th, 2021)
 
 The hooks is now written in TypeScript.
 
