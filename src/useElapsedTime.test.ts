@@ -264,4 +264,26 @@ describe('useElapsedTime', () => {
     )
     expect(props.onUpdate).toHaveBeenCalledWith(3)
   })
+
+  it('resets timer and start over using the new startAt when onComplete shouldRepeat = true, newStartAt = 0.2', async () => {
+    const newStartAt = 0.2
+    const onComplete = jest.fn(() => ({ shouldRepeat: true, newStartAt }))
+    const props = { isPlaying: true, duration: 1, startAt: 0.5, onComplete }
+    const { result, waitFor } = setupHook(props)
+
+    expect(result.current.elapsedTime).toBe(props.startAt)
+    await waitFor(() => expect(result.current.elapsedTime).toBe(newStartAt))
+  })
+
+  it('reset elapsed time to the new startAt value passed in the reset method when it is fired', () => {
+    const newStartAt = 0.123
+    const props = { isPlaying: true, duration: 1, startAt: 0.25 }
+    const { result } = setupHook(props)
+
+    act(() => {
+      result.current.reset(newStartAt)
+    })
+
+    expect(result.current.elapsedTime).toBe(newStartAt)
+  })
 })

@@ -19,7 +19,7 @@ const ElapsedTime = () => {
     <div>
       <span>{elapsedTime}</span>
       <br />
-      <button onClick={reset}>Reset</button>
+      <button onClick={() => reset()}>Reset</button>
       <button onClick={() => setIsPlaying((prev) => !prev)}>
         Toggle Playing
       </button>
