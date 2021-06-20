@@ -6,7 +6,7 @@ type MayBe<T> = T | null
 export interface ReturnValue {
   /** Current elapsed time in seconds */
   elapsedTime: number
-  /** Reset method to reset the elapsed time and start over. startAt value can be changed by passing newStartAt value */
+  /** Reset method to reset the elapsed time and start over. startAt value can be changed by passing newStartAt */
   reset: (newStartAt?: number) => void
 }
 

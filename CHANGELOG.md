@@ -1,5 +1,15 @@
 # Change Log
 
+## 3.0.1 ( June 20th, 2021)
+
+**Big fix:**
+
+- Fix an issue where the new `updateInterval` prop didn't really respect that elapsed time. Now, for example, if it is set to 10 seconds then the next update will be exactly after 10 seconds.
+
+**Implemented enhancements:**
+
+- `newStartAt` value can now be passed to the `onComplete` callback as well as the `reset` method. This feature was available in v2 of the hook and it is implemented again in v.3
+
 ## 3.0.0 ( June 18th, 2021)
 
 The hooks is now written in TypeScript.
