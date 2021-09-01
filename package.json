@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@testing-library/react-hooks": "7.0.2",
-    "@types/jest": "26.0.24",
+    "@types/jest": "27.0.1",
     "codecov": "3.8.3",
     "esbuild": "0.12.24",
     "jest": "27.1.0",
