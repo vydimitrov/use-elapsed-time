@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.2 ( September 5th, 2021)
+
+**Big fix:**
+
+- Check if the value passed to `reset` is a number
+
 ## 3.0.1 ( June 20th, 2021)
 
 **Big fix:**

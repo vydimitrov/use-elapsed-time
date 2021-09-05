@@ -103,14 +103,16 @@ export const useElapsedTime = ({
   }
 
   const reset = useCallback(
-    (newStartAt: number = startAt) => {
+    (newStartAt?: number) => {
+      const newStartAtValue =
+        typeof newStartAt === 'number' ? newStartAt : startAt
       cleanup()
       loopRef.current = {
         ...loopRef.current,
         elapsedTimeRef: 0,
-        startAtRef: newStartAt,
+        startAtRef: newStartAtValue,
       }
-      setElapsedTime(newStartAt)
+      setElapsedTime(newStartAtValue)
 
       if (isPlaying) {
         requestRef.current = requestAnimationFrame(loop)
