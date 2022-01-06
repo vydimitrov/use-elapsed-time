@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/use-elapsed-time)](https://www.npmjs.com/package/use-elapsed-time)
 [![npm](https://img.shields.io/npm/dw/use-elapsed-time)](https://www.npmjs.com/package/use-elapsed-time)
-![Codecov](https://img.shields.io/codecov/c/github/vydimitrov/use-elapsed-time)
+[![Codecov](https://img.shields.io/codecov/c/github/vydimitrov/use-elapsed-time)](https://app.codecov.io/gh/vydimitrov/use-elapsed-time)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/use-elapsed-time)](https://bundlephobia.com/result?p=use-elapsed-time)
 
 React hook to measure elapsed time using `requestAnimationFrame`. The time measurement can be played and paused, additionally the start time and duration can be set. The primary use case of the hooks is in animations where the most important part of the animation is time.
