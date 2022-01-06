@@ -42,23 +42,12 @@ export const useElapsedTime = ({
   onComplete,
   onUpdate,
 }: Props): ReturnValue => {
-  const [elapsedTime, setElapsedTime] = useState(startAt)
+  const [displayTime, setDisplayTime] = useState(startAt)
+  const elapsedTimeRef = useRef(0)
   const totalElapsedTimeRef = useRef(startAt * -1000) // keep in milliseconds to avoid summing up floating point numbers
   const requestRef = useRef<MayBe<number>>(null)
   const previousTimeRef = useRef<MayBe<number>>(null)
   const repeatTimeoutRef = useRef<MayBe<NodeJS.Timeout>>(null)
-  const loopRef = useRef({
-    elapsedTimeRef: 0,
-    startAtRef: startAt,
-    durationRef: duration,
-    updateIntervalRef: updateInterval,
-  })
-  // keep duration and updateInterval up to date in the loop in case they change while the loop is running
-  loopRef.current = {
-    ...loopRef.current,
-    durationRef: duration,
-    updateIntervalRef: updateInterval,
-  }
 
   const loop = (time: number) => {
     const timeSec = time / 1000
@@ -69,26 +58,23 @@ export const useElapsedTime = ({
     }
 
     // get current elapsed time
-    const { durationRef, elapsedTimeRef, updateIntervalRef, startAtRef } =
-      loopRef.current
     const deltaTime = timeSec - previousTimeRef.current
-    const currentElapsedTime = elapsedTimeRef + deltaTime
+    const currentElapsedTime = elapsedTimeRef.current + deltaTime
 
     // update refs with the current elapsed time
     previousTimeRef.current = timeSec
-    loopRef.current = { ...loopRef.current, elapsedTimeRef: currentElapsedTime }
+    elapsedTimeRef.current = currentElapsedTime
 
-    // set current display time
+    // set current display time by adding the elapsed time on top of the startAt time
     const currentDisplayTime =
-      startAtRef +
-      (updateIntervalRef === 0
+      startAt +
+      (updateInterval === 0
         ? currentElapsedTime
-        : ((currentElapsedTime / updateIntervalRef) | 0) * updateIntervalRef)
+        : ((currentElapsedTime / updateInterval) | 0) * updateInterval)
 
-    const totalTime = startAtRef + currentElapsedTime
-    const isCompleted =
-      typeof durationRef === 'number' && totalTime >= durationRef
-    setElapsedTime(isCompleted ? durationRef! : currentDisplayTime)
+    const totalTime = startAt + currentElapsedTime
+    const isCompleted = typeof duration === 'number' && totalTime >= duration
+    setDisplayTime(isCompleted ? duration! : currentDisplayTime)
 
     // repeat animation if not completed
     if (!isCompleted) {
@@ -104,15 +90,10 @@ export const useElapsedTime = ({
 
   const reset = useCallback(
     (newStartAt?: number) => {
-      const newStartAtValue =
-        typeof newStartAt === 'number' ? newStartAt : startAt
       cleanup()
-      loopRef.current = {
-        ...loopRef.current,
-        elapsedTimeRef: 0,
-        startAtRef: newStartAtValue,
-      }
-      setElapsedTime(newStartAtValue)
+
+      elapsedTimeRef.current = 0
+      setDisplayTime(typeof newStartAt === 'number' ? newStartAt : startAt)
 
       if (isPlaying) {
         requestRef.current = requestAnimationFrame(loop)
@@ -122,9 +103,9 @@ export const useElapsedTime = ({
   )
 
   useIsomorphicEffect(() => {
-    onUpdate?.(elapsedTime)
+    onUpdate?.(displayTime)
 
-    if (duration && elapsedTime >= duration) {
+    if (duration && displayTime >= duration) {
       totalElapsedTimeRef.current += duration * 1000
 
       const {
@@ -140,7 +121,7 @@ export const useElapsedTime = ({
         )
       }
     }
-  }, [elapsedTime, duration])
+  }, [displayTime, duration])
 
   useIsomorphicEffect(() => {
     if (isPlaying) {
@@ -148,7 +129,8 @@ export const useElapsedTime = ({
     }
 
     return cleanup
-  }, [isPlaying])
+    // start animation over when duration or updateInterval change
+  }, [isPlaying, duration, updateInterval])
 
-  return { elapsedTime, reset }
+  return { elapsedTime: displayTime, reset }
 }

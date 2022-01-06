@@ -1,4 +1,4 @@
-name: Codecov Coverage
+name: Test Coverage
 on: [push]
 jobs:
   build-push-coverage:
@@ -15,8 +15,6 @@ jobs:
           yarn test
       - name: Upload coverage
         if: success()
-        run: |
-          curl -s https://codecov.io/bash | bash
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        shell: bash
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
