@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.0.3 ( January 6th, 2022)
+
+**Big fix:**
+
+- Replay the animation when the duration increases after the initial animation is over
+
 ## 3.0.2 ( September 5th, 2021)
 
 **Big fix:**
