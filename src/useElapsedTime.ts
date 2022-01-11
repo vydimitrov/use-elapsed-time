@@ -44,6 +44,7 @@ export const useElapsedTime = ({
 }: Props): ReturnValue => {
   const [displayTime, setDisplayTime] = useState(startAt)
   const elapsedTimeRef = useRef(0)
+  const startAtRef = useRef(startAt)
   const totalElapsedTimeRef = useRef(startAt * -1000) // keep in milliseconds to avoid summing up floating point numbers
   const requestRef = useRef<MayBe<number>>(null)
   const previousTimeRef = useRef<MayBe<number>>(null)
@@ -67,12 +68,12 @@ export const useElapsedTime = ({
 
     // set current display time by adding the elapsed time on top of the startAt time
     const currentDisplayTime =
-      startAt +
+      startAtRef.current +
       (updateInterval === 0
         ? currentElapsedTime
         : ((currentElapsedTime / updateInterval) | 0) * updateInterval)
 
-    const totalTime = startAt + currentElapsedTime
+    const totalTime = startAtRef.current + currentElapsedTime
     const isCompleted = typeof duration === 'number' && totalTime >= duration
     setDisplayTime(isCompleted ? duration! : currentDisplayTime)
 
@@ -93,7 +94,9 @@ export const useElapsedTime = ({
       cleanup()
 
       elapsedTimeRef.current = 0
-      setDisplayTime(typeof newStartAt === 'number' ? newStartAt : startAt)
+      const nextStartAt = typeof newStartAt === 'number' ? newStartAt : startAt
+      startAtRef.current = nextStartAt
+      setDisplayTime(nextStartAt)
 
       if (isPlaying) {
         requestRef.current = requestAnimationFrame(loop)

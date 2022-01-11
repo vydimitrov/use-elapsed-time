@@ -11,7 +11,7 @@ const ElapsedTime = () => {
     startAt: 4.2,
     onComplete: (time) => {
       console.log('Total time', time)
-      return { shouldRepeat: true, delay: 2 }
+      return { shouldRepeat: true, delay: 2, newStartAt: 0 }
     },
     onUpdate: (value) => {
       // console.log(`Current elapsed time is ${value} seconds`)

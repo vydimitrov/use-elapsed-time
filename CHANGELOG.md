@@ -1,18 +1,24 @@
 # Change Log
 
-## 3.0.3 ( January 6th, 2022)
+## 3.0.4 (January 11th, 2022)
+
+**Big fix:**
+
+- Fix an issue where the `newStartAt` from the onComplete handler was not respected
+
+## 3.0.3 (January 6th, 2022)
 
 **Big fix:**
 
 - Replay the animation when the duration increases after the initial animation is over
 
-## 3.0.2 ( September 5th, 2021)
+## 3.0.2 (September 5th, 2021)
 
 **Big fix:**
 
 - Check if the value passed to `reset` is a number
 
-## 3.0.1 ( June 20th, 2021)
+## 3.0.1 (June 20th, 2021)
 
 **Big fix:**
 
@@ -22,7 +28,7 @@
 
 - `newStartAt` value can now be passed to the `onComplete` callback as well as the `reset` method. This feature was available in v2 of the hook and it is implemented again in v.3
 
-## 3.0.0 ( June 18th, 2021)
+## 3.0.0 (June 18th, 2021)
 
 The hooks is now written in TypeScript.
 
